@@ -20,6 +20,18 @@ public class HomogenousVector
     this.z = z;
   }
 
+  public HomogenousVector(String xString, String yString, String zString)
+  {
+    HomogenousPolynomial x = new HomogenousPolynomial(xString);
+    HomogenousPolynomial y = new HomogenousPolynomial(yString);
+    HomogenousPolynomial z = new HomogenousPolynomial(zString);
+    if (x.degree() != y.degree() || y.degree() != z.degree() || z.degree() != x.degree())
+      throw new IllegalArgumentException("polynomials must be same degree");
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
   public int degree()
   {
     return x.degree();

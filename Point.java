@@ -9,6 +9,22 @@ public class Point
     this.coords = coords;
   }
 
+  public Point(HomogenousPolynomial x, HomogenousPolynomial y, HomogenousPolynomial z)
+  {
+    coords = new HomogenousVector(x, y, z);
+    if (coords.equalsZero())
+      throw new IllegalArgumentException("coordinates cannot all be zero");
+    this.coords = coords;
+  }
+
+  public Point(String xString, String yString, String zString)
+  {
+    coords = new HomogenousVector(xString, yString, zString);
+    if (coords.equalsZero())
+      throw new IllegalArgumentException("coordinates cannot all be zero");
+    this.coords = coords;
+  }
+
   public Point(Line l1, Line l2)
   {
     if (l1.equals(l2))

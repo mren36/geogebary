@@ -115,17 +115,35 @@ public class HomogenousPolynomial
       return "0";
     polyString = polyString.replace("+-", "-");
     polyString = polyString.replace("a^0", "");
-    polyString = polyString.replace("a^1", "a");
     polyString = polyString.replace("b^0", "");
-    polyString = polyString.replace("b^1", "b");
     polyString = polyString.replace("c^0", "");
-    polyString = polyString.replace("c^1", "c");
     polyString = polyString.replace("+1a", "+a");
     polyString = polyString.replace("-1a", "-a");
     polyString = polyString.replace("+1b", "+b");
     polyString = polyString.replace("-1b", "-b");
     polyString = polyString.replace("+1c", "+c");
     polyString = polyString.replace("-1c", "-c");
+    int index = polyString.indexOf("a^1");
+    while (index >= 0)
+    {
+      if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
+        polyString = polyString.substring(0, index + 1) + polyString.substring(index + 3);
+      index = polyString.indexOf("a^1", index + 1);
+    }
+    index = polyString.indexOf("b^1");
+    while (index >= 0)
+    {
+      if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
+        polyString = polyString.substring(0, index + 1) + polyString.substring(index + 3);
+      index = polyString.indexOf("b^1", index + 1);
+    }
+    index = polyString.indexOf("c^1");
+    while (index >= 0)
+    {
+      if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
+        polyString = polyString.substring(0, index + 1) + polyString.substring(index + 3);
+      index = polyString.indexOf("c^1", index + 1);
+    }
     if (polyString.charAt(0) == '+')
       polyString = polyString.substring(1);
     return polyString;

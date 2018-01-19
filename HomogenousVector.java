@@ -49,6 +49,16 @@ public class HomogenousVector
     return new HomogenousVector(x.timesConstant(c), y.timesConstant(c), z.timesConstant(c));
   }
 
+  public HomogenousVector times(HomogenousPolynomial p)
+  {
+    return new HomogenousVector(p.times(x), p.times(y), p.times(z));
+  }
+
+  public HomogenousVector times(HomogenousVector v)
+  {
+    return new HomogenousVector(x.times(v.getX()), y.times(v.getY()), z.times(v.getZ()));
+  }
+
   public HomogenousPolynomial dot(HomogenousVector other)
   {
     return x.times(other.x).plus(y.times(other.y).plus(z.times(other.z)));

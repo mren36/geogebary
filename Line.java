@@ -56,4 +56,14 @@ public class Line
   {
     return coeffs.perp(p.getCoords());
   }
+
+  public boolean parallel(Line other)
+  {
+    return Geometry.parallel(this, other);
+  }
+
+  public boolean perp(Line other)
+  {
+    return Geometry.perp(this, other);
+  }
 }

@@ -25,11 +25,16 @@ public class Line
     this.coeffs = coeffs;
   }
 
-  public Line(Point p1, Point p2)
+  public Line(Point P1, Point P2)
   {
-    if (p1.equals(p2))
+    if (P1.equals(P2))
       throw new IllegalArgumentException("points cannot be the same");
-    this.coeffs = p1.getCoords().cross(p2.getCoords());
+    this.coeffs = P1.getCoords().cross(P2.getCoords());
+  }
+
+  public Line(Line other)
+  {
+    coeffs = other.coeffs;
   }
 
   public boolean equals(Line other)
@@ -52,9 +57,9 @@ public class Line
     return new Point(this, other);
   }
 
-  public boolean contains(Point p)
+  public boolean contains(Point P)
   {
-    return coeffs.perp(p.getCoords());
+    return coeffs.perp(P.getCoords());
   }
 
   public boolean parallel(Line other)
@@ -65,5 +70,25 @@ public class Line
   public boolean perp(Line other)
   {
     return Geometry.perp(this, other);
+  }
+
+  public HomogenousPolynomial getX()
+  {
+    return coeffs.getX();
+  }
+
+  public HomogenousPolynomial getY()
+  {
+    return coeffs.getY();
+  }
+
+  public HomogenousPolynomial getZ()
+  {
+    return coeffs.getZ();
+  }
+
+  public boolean isTangent(Circle c)
+  {
+    return Geometry.isTangent(this, c);
   }
 }

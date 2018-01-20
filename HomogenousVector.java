@@ -11,6 +11,13 @@ public class HomogenousVector
     z = new HomogenousPolynomial(0);
   }
 
+  public HomogenousVector(int i)
+  {
+    x = new HomogenousPolynomial(i);
+    y = new HomogenousPolynomial(i);
+    z = new HomogenousPolynomial(i);
+  }
+
   public HomogenousVector(HomogenousPolynomial x, HomogenousPolynomial y, HomogenousPolynomial z)
   {
     if (x.degree() != y.degree() || y.degree() != z.degree() || z.degree() != x.degree())
@@ -32,6 +39,13 @@ public class HomogenousVector
     this.z = z;
   }
 
+  public HomogenousVector(HomogenousVector other)
+  {
+    x = other.x;
+    y = other.y;
+    z = other.z;
+  }
+
   public int degree()
   {
     return x.degree();
@@ -44,9 +58,9 @@ public class HomogenousVector
     return new HomogenousVector(x.plus(other.x), y.plus(other.y), z.plus(other.z));
   }
 
-  public HomogenousVector timesConstant(int c)
+  public HomogenousVector times(int c)
   {
-    return new HomogenousVector(x.timesConstant(c), y.timesConstant(c), z.timesConstant(c));
+    return new HomogenousVector(x.times(c), y.times(c), z.times(c));
   }
 
   public HomogenousVector times(HomogenousPolynomial p)
@@ -79,6 +93,10 @@ public class HomogenousVector
 
   public boolean equals(HomogenousVector other)
   {
+    if (this.equalsZero())
+      return other.equalsZero();
+    if (other.equalsZero())
+      return this.equalsZero();
     return cross(other).equalsZero();
   }
 
@@ -105,5 +123,10 @@ public class HomogenousVector
   public HomogenousPolynomial getZ()
   {
     return z;
+  }
+
+  public HomogenousPolynomial weight()
+  {
+    return x.plus(y.plus(z));
   }
 }

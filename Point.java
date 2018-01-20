@@ -32,6 +32,11 @@ public class Point
     this.coords = l1.getCoeffs().cross(l2.getCoeffs());
   }
 
+  public Point(Point other)
+  {
+    coords = other.coords;
+  }
+
   public boolean equals(Point other)
   {
     return coords.equals(other.coords);
@@ -55,5 +60,42 @@ public class Point
   public boolean on(Line l)
   {
     return coords.perp(l.getCoeffs());
+  }
+
+  public Point reflectOver(Point other)
+  {
+    return Geometry.reflect(this, other);
+  }
+
+  public Point reflectOver(Line l)
+  {
+    return Geometry.reflect(this, l);
+  }
+
+  public HomogenousPolynomial weight()
+  {
+    return coords.weight();
+  }
+
+  public HomogenousPolynomial getX()
+  {
+    return coords.getX();
+  }
+
+  public HomogenousPolynomial getY()
+  {
+    return coords.getY();
+  }
+
+  public HomogenousPolynomial getZ()
+  {
+    return coords.getZ();
+  }
+
+  public boolean on(Circle c)
+  {
+    HomogenousPolynomial pow = c.getCoeff().times(new HomogenousPolynomial("a^2").times(coords.getY().times(coords.getZ())).plus(new HomogenousPolynomial("b^2").times(coords.getZ().times(coords.getX()))).plus(new HomogenousPolynomial("c^2").times(coords.getX().times(coords.getY()))));
+    HomogenousPolynomial rad = weight().times(coords.dot(c.getRadCoeffs()));
+    return pow.equals(rad);
   }
 }

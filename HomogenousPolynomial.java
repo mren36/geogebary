@@ -55,7 +55,7 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
-  public HomogenousPolynomial timesConstant(int c)
+  public HomogenousPolynomial times(int c)
   {
     int[][] newPoly = new int[degree() + 1][degree() + 1];
     for (int i = 0; i <= degree(); i++)
@@ -66,7 +66,7 @@ public class HomogenousPolynomial
 
   public HomogenousPolynomial minus(HomogenousPolynomial other)
   {
-    return plus(other.timesConstant(-1));
+    return plus(other.times(-1));
   }
 
   public HomogenousPolynomial times(HomogenousPolynomial other)
@@ -87,6 +87,11 @@ public class HomogenousPolynomial
     if (p == 1)
       return new HomogenousPolynomial(this);
     return times(pow(p - 1));
+  }
+
+  public HomogenousVector times(HomogenousVector v)
+  {
+    return v.times(this);
   }
 
   public boolean equalsZero()

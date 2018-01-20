@@ -246,4 +246,46 @@ public class Geometry
       throw new IllegalArgumentException("points cannot be the same");
     return new Point(new Line(P1, P2), new Line(Q1, Q2));
   }
+
+  public static boolean coaxial(Circle c1, Circle c2, Circle c3)
+  {
+    if (c1.equals(c2) || c2.equals(c3) || c3.equals(c1))
+      return true;
+    return (radAxis(c1, c2).equals(radAxis(c1, c3)));
+  }
+
+  public static boolean conc(Circle c1, Circle c2, Circle c3)
+  {
+    if (c1.equals(c2) || c2.equals(c3) || c3.equals(c1))
+      return true;
+    return (radCenter(c1, c2, c3).on(c1));
+  }
+
+  public static Circle centered(Point P, Point Q)
+  {
+    Point A = new Point("1", "0", "0");
+    Point B = new Point("0", "1", "0");
+    Point C = new Point("0", "0", "1");
+    if (P.equals(Q))
+      throw new IllegalArgumentException("points cannot be the same");
+    if (P.equals(A))
+      return new Circle(Q, Q.reflectOver(new Line(B, P)), Q.reflectOver(new Line(C, P)));
+    else if (P.equals(B))
+      return new Circle(Q, Q.reflectOver(new Line(A, P)), Q.reflectOver(new Line(C, P)));
+    else
+      return new Circle(Q, Q.reflectOver(new Line(A, P)), Q.reflectOver(new Line(B, P)));
+  }
+
+  public static Circle diameter(Point P1, Point P2)
+  {
+    if (P1.equals(P2))
+      throw new IllegalArgumentException("points cannot be the same");
+    Point A = new Point("1", "0", "0");
+    Point B = new Point("0", "1", "0");
+    Point C = new Point("0", "0", "1");
+    if (new Line(P1, P2).parallel(new Line(A, B)))
+      return new Circle(P1, P2, extension(P1, infPoint(new Line(A, B)), P2, perpInfPoint(new Line(A, B))));
+    else
+      return new Circle(P1, P2, extension(P1, infPoint(new Line(A, C)), P2, perpInfPoint(new Line(A, C))));
+  }
 }

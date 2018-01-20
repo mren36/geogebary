@@ -55,6 +55,13 @@ public class Circle
     radCoeffs = circle.radCoeffs;
   }
 
+  public Circle(Point P1, Point P2)
+  {
+    Circle circle = Geometry.diameter(P1, P2);
+    coeff = circle.coeff;
+    radCoeffs = circle.radCoeffs;
+  }
+
   public boolean equals(Circle other)
   {
     return radCoeffs.times(other.coeff).equals(other.radCoeffs.times(coeff));

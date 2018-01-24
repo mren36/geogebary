@@ -64,6 +64,24 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
+  public HomogenousPolynomial div(int c)
+  {
+    int[][] newPoly = new int[degree() + 1][degree() + 1];
+    for (int i = 0; i <= degree(); i++)
+      for (int j = 0; j <= degree(); j++)
+        newPoly[i][j] = poly[i][j] / c;
+    return new HomogenousPolynomial(newPoly);
+  }
+
+  public int gcd()
+  {
+    int gcd = 0;
+    for (int i = 0; i <= degree(); i++)
+      for (int j = 0; j <= degree(); j++)
+        gcd = gcd(gcd, poly[i][j]);
+    return gcd;
+  }
+
   public HomogenousPolynomial minus(HomogenousPolynomial other)
   {
     return plus(other.times(-1));
@@ -383,5 +401,14 @@ public class HomogenousPolynomial
     mono[2] = bPow;
     mono[3] = cPow;
     return mono;
+  }
+
+  public static int gcd(int a, int b)
+  {
+    if (a == 0)
+      return b;
+    if (b == 0)
+      return a;
+    return gcd(b, a%b);
   }
 }

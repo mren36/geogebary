@@ -46,6 +46,20 @@ public class HomogenousVector
     z = other.z;
   }
 
+  public void reduce()
+  {
+    int Xgcd = x.gcd();
+    int Ygcd = y.gcd();
+    int Zgcd = z.gcd();
+    int gcd = HomogenousPolynomial.gcd(Xgcd, HomogenousPolynomial.gcd(Ygcd, Zgcd));
+    if (gcd != 0)
+    {
+      x = x.div(gcd);
+      y = y.div(gcd);
+      z = z.div(gcd);
+    }
+  }
+
   public int degree()
   {
     return x.degree();

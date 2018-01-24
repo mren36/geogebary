@@ -6,7 +6,9 @@ public class Point
   {
     if (coords.equalsZero())
       throw new IllegalArgumentException("coordinates cannot all be zero");
-    this.coords = coords;
+    HomogenousVector v = coords;
+    v.reduce();
+    this.coords = v;
   }
 
   public Point(HomogenousPolynomial x, HomogenousPolynomial y, HomogenousPolynomial z)
@@ -14,7 +16,9 @@ public class Point
     coords = new HomogenousVector(x, y, z);
     if (coords.equalsZero())
       throw new IllegalArgumentException("coordinates cannot all be zero");
-    this.coords = coords;
+    HomogenousVector v = coords;
+    v.reduce();
+    this.coords = v;
   }
 
   public Point(String xString, String yString, String zString)
@@ -22,14 +26,18 @@ public class Point
     coords = new HomogenousVector(xString, yString, zString);
     if (coords.equalsZero())
       throw new IllegalArgumentException("coordinates cannot all be zero");
-    this.coords = coords;
+    HomogenousVector v = coords;
+    v.reduce();
+    this.coords = v;
   }
 
   public Point(Line l1, Line l2)
   {
     if (l1.equals(l2))
       throw new IllegalArgumentException("lines cannot be the same");
-    this.coords = l1.getCoeffs().cross(l2.getCoeffs());
+    HomogenousVector v = l1.getCoeffs().cross(l2.getCoeffs());
+    v.reduce();
+    this.coords = v;
   }
 
   public Point(Point other)

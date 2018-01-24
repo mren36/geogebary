@@ -6,7 +6,9 @@ public class Line
   {
     if (coeffs.equalsZero())
       throw new IllegalArgumentException("line equation coordinates cannot all be zero");
-    this.coeffs = coeffs;
+    HomogenousVector v = coeffs;
+    v.reduce();
+    this.coeffs = v;
   }
 
   public Line(HomogenousPolynomial x, HomogenousPolynomial y, HomogenousPolynomial z)
@@ -14,7 +16,9 @@ public class Line
     coeffs = new HomogenousVector(x, y, z);
     if (coeffs.equalsZero())
       throw new IllegalArgumentException("line equation coordinates cannot all be zero");
-    this.coeffs = coeffs;
+    HomogenousVector v = coeffs;
+    v.reduce();
+    this.coeffs = v;
   }
 
   public Line(String xString, String yString, String zString)
@@ -22,14 +26,18 @@ public class Line
     coeffs = new HomogenousVector(xString, yString, zString);
     if (coeffs.equalsZero())
       throw new IllegalArgumentException("line equation coordinates cannot all be zero");
-    this.coeffs = coeffs;
+    HomogenousVector v = coeffs;
+    v.reduce();
+    this.coeffs = v;
   }
 
   public Line(Point P1, Point P2)
   {
     if (P1.equals(P2))
       throw new IllegalArgumentException("points cannot be the same");
-    this.coeffs = P1.getCoords().cross(P2.getCoords());
+    HomogenousVector v = P1.getCoords().cross(P2.getCoords());
+    v.reduce();
+    this.coeffs = v;
   }
 
   public Line(Line other)

@@ -4,7 +4,9 @@ public class Geometry
 
   public static Point average(Point P1, Point P2, int w1, int w2)
   {
-    return new Point(P1.getCoords().times(w1).times(P2.weight()).plus(P2.getCoords().times(-w2).times(P1.weight())));
+    HomogenousVector v = P1.getCoords().times(w1).times(P2.weight()).plus(P2.getCoords().times(-w2).times(P1.weight()));
+    v.reduce();
+    return new Point(v);
   }
 
   public static Point midpoint(Point P1, Point P2)
@@ -19,7 +21,9 @@ public class Geometry
 
   public static Point polyAverage(Point P1, Point P2, HomogenousPolynomial w1, HomogenousPolynomial w2)
   {
-    return new Point(P1.getCoords().times(w1).plus(P2.getCoords().times(w2.times(-1))));
+    HomogenousVector v = P1.getCoords().times(w1).plus(P2.getCoords().times(w2.times(-1)));
+    v.reduce();
+    return new Point(v);
   }
 
   public static Point infPoint(Line l)
@@ -44,6 +48,13 @@ public class Geometry
   public static Line perp(Point P, Line l)
   {
     return new Line(P, perpInfPoint(l));
+  }
+
+  public static Line perp(Point P, Point P1, Point P2)
+  {
+    if (P1.equals(P2))
+      throw new IllegalArgumentException("points cannot be the same");
+    return perp(P, new Line(P1, P2));
   }
 
   public static Point foot(Point P, Line l)
@@ -283,7 +294,7 @@ public class Geometry
     Point A = new Point("1", "0", "0");
     Point B = new Point("0", "1", "0");
     Point C = new Point("0", "0", "1");
-    if (new Line(P1, P2).parallel(new Line(A, B)))
+    if (new Line(P1, P2).parallel(new Line(A, B)) || new Line(P1, P2).perp(new Line(A, B)))
       return new Circle(P1, P2, extension(P1, infPoint(new Line(A, B)), P2, perpInfPoint(new Line(A, B))));
     else
       return new Circle(P1, P2, extension(P1, infPoint(new Line(A, C)), P2, perpInfPoint(new Line(A, C))));

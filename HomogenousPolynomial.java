@@ -1,13 +1,17 @@
+// a class that represents a homogenous polynomial with integer coefficients in three variables a, b, c
+
 public class HomogenousPolynomial
 {
-  private int[][] poly;
+  private int[][] poly; // an array that stores the coefficients of the polynomial
+                        // poly[i][j] denotes the coefficient of x^iy^jz^(d-i-j)
+                        // where d is the degree of the polynomial
 
-  public HomogenousPolynomial(int degree)
+  public HomogenousPolynomial(int d) // returns a polynomial of degree d with coefficients all 0
   {
-    poly = new int[degree + 1][degree + 1];
+    poly = new int[d + 1][d + 1];
   }
 
-  public HomogenousPolynomial(int[][] poly)
+  public HomogenousPolynomial(int[][] poly) // returns a polynomial with coefficients specified by the array
   {
     if (poly.length != poly[0].length)
       throw new IllegalArgumentException("number of rows must equal number of columns");
@@ -15,12 +19,17 @@ public class HomogenousPolynomial
       this.poly = poly;
   }
 
-  public HomogenousPolynomial(HomogenousPolynomial other)
+  public HomogenousPolynomial(HomogenousPolynomial other) // copy constructor
   {
     this.poly = other.poly;
   }
 
-  public HomogenousPolynomial(String polyString)
+  public HomogenousPolynomial(String polyString) // returns a polynomial given its String form
+                                                 // no spaces between coefficients and terms ordered a,b,c
+                                                 // example: a^3-ab^2+3ab^2+7c^3
+                                                 // non-example: a+b^2 (not homogenous)
+                                                 // non-example: a+cb (cb not in order a,b,c and should be bc instead)
+                                                 // non-example: a + b (spacing between terms)
   {
     String s = addPlusOne(polyString);
     String[] monomials = s.split("\\+");
@@ -39,12 +48,12 @@ public class HomogenousPolynomial
     this.poly = poly;
   }
 
-  public int degree()
+  public int degree() // returns the degree of the polynomial
   {
     return poly.length - 1;
   }
 
-  public HomogenousPolynomial plus(HomogenousPolynomial other)
+  public HomogenousPolynomial plus(HomogenousPolynomial other) // returns the polynomial sum of this and other
   {
     if (this.degree() != other.degree())
       throw new IllegalArgumentException("degrees must be the same");
@@ -55,7 +64,7 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
-  public HomogenousPolynomial times(int c)
+  public HomogenousPolynomial times(int c) // returns the product of the polynomial and an integer c
   {
     int[][] newPoly = new int[degree() + 1][degree() + 1];
     for (int i = 0; i <= degree(); i++)
@@ -64,7 +73,7 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
-  public HomogenousPolynomial div(int c)
+  public HomogenousPolynomial div(int c) // returns the quotient of the polynomial and an integer c
   {
     int[][] newPoly = new int[degree() + 1][degree() + 1];
     for (int i = 0; i <= degree(); i++)
@@ -72,8 +81,17 @@ public class HomogenousPolynomial
         newPoly[i][j] = poly[i][j] / c;
     return new HomogenousPolynomial(newPoly);
   }
+  
+  public static int gcd(int a, int b) // static helper method for gcd(), returns gcd of two integers
+  {
+    if (a == 0)
+      return b;
+    if (b == 0)
+      return a;
+    return gcd(b, a%b);
+  }
 
-  public int gcd()
+  public int gcd() // returns the gcd of the coefficients of the polynomial, defined to be 0 if all coefficients are 0
   {
     int gcd = 0;
     for (int i = 0; i <= degree(); i++)
@@ -82,12 +100,12 @@ public class HomogenousPolynomial
     return gcd;
   }
 
-  public HomogenousPolynomial minus(HomogenousPolynomial other)
+  public HomogenousPolynomial minus(HomogenousPolynomial other) // returns the polynomial difference between this and other
   {
     return plus(other.times(-1));
   }
 
-  public HomogenousPolynomial times(HomogenousPolynomial other)
+  public HomogenousPolynomial times(HomogenousPolynomial other) // returns the polynomial product of this and other
   {
     int[][] newPoly = new int[degree() + other.degree() + 1][degree() + other.degree() + 1];
     for (int i1 = degree() + 1; i1 >= 0; i1--)
@@ -98,7 +116,7 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
-  public HomogenousPolynomial pow(int p)
+  public HomogenousPolynomial pow(int p) // returns the polynomial raised to the pth power
   {
     if (p < 1)
       throw new IllegalArgumentException("power must be positive integer");
@@ -107,12 +125,12 @@ public class HomogenousPolynomial
     return times(pow(p - 1));
   }
 
-  public HomogenousVector times(HomogenousVector v)
+  public HomogenousVector times(HomogenousVector v) // returns the product of the polynomial by a HomogenousVector
   {
     return v.times(this);
   }
 
-  public boolean equalsZero()
+  public boolean equalsZero() // returns wehther the polynomial is the zero polynomial, i.e. has all coefficients 0
   {
     for (int i = 0; i <= degree(); i++)
       for (int j = 0; j <= degree(); j++)
@@ -121,12 +139,12 @@ public class HomogenousPolynomial
     return true;
   }
 
-  public boolean equals(HomogenousPolynomial other)
+  public boolean equals(HomogenousPolynomial other) // returns whether the polynomial has the same coefficients as other
   {
     return minus(other).equalsZero();
   }
 
-  public String toString()
+  public String toString() // returns the String form of the polynomial, ordered lexicographically as a>b>c
   {
     String polyString = "";
     int d = this.degree();
@@ -172,7 +190,7 @@ public class HomogenousPolynomial
     return polyString;
   }
 
-  private static String addPlus(String polyString)
+  private static String addPlus(String polyString) // private helper method for toString(), adds + between each term
   {
     String s = polyString;
     int index = s.indexOf("-");
@@ -186,7 +204,7 @@ public class HomogenousPolynomial
     return s;
   }
 
-  private static String addPlusOne(String polyString)
+  private static String addPlusOne(String polyString) // private helper method for toString(), adds coefficients of 1 and -1
   {
     if (polyString.length() == 0)
       throw new IllegalArgumentException("string cannot be empty");
@@ -252,7 +270,7 @@ public class HomogenousPolynomial
     return s;
   }
 
-  private static int[] coeffPow(String monomial)
+  private static int[] coeffPow(String monomial) // private helper method for toString(), returns coefficient and powers of a monomial
   {
     int aIndex = monomial.indexOf("a");
     int bIndex = monomial.indexOf("b");
@@ -401,14 +419,5 @@ public class HomogenousPolynomial
     mono[2] = bPow;
     mono[3] = cPow;
     return mono;
-  }
-
-  public static int gcd(int a, int b)
-  {
-    if (a == 0)
-      return b;
-    if (b == 0)
-      return a;
-    return gcd(b, a%b);
   }
 }

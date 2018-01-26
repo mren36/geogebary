@@ -1,5 +1,8 @@
 // a class that represents a line with barycentric equation ux+vy+wz=0 for some HomogenousVector (u, v, w)
 
+import java.awt.*;
+import javax.swing.*;
+
 public class Line
 {
   private HomogenousVector coeffs; // stores the coefficients of the line equation
@@ -101,5 +104,73 @@ public class Line
   public boolean isTangent(Circle c) // returns whether the line is tangent to c
   {
     return Geometry.isTangent(this, c);
+  }
+
+  public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy, int width, int height) // draws the line in g given coefficients
+  {
+    Point P1, P2;
+    if (equals(new Line("0", "0", "1")))
+    {
+      P1 = new Point("1", "0", "0");
+      P2 = new Point("0", "1", "0");
+    }
+    else if (equals(new Line("0", "1", "0")))
+    {
+      P1 = new Point("1", "0", "0");
+      P2 = new Point("0", "0", "1");
+    }
+    else if (new Point("1", "0", "0").on(this))
+    {
+      P1 = new Point("1", "0", "0");
+      P2 = new Point(this, new Line("1", "0", "0"));
+    }
+    else
+    {
+      P1 = new Point(this, new Line("0", "1", "0"));
+      P2 = new Point(this, new Line("0", "0", "1"));
+    }
+    double a = Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy));
+    double b = Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay));
+    double c = Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+    double[] v1 = P1.getCoords().eval(a, b, c);
+    double[] v2 = P2.getCoords().eval(a, b, c);
+    double x1 = v1[0] * ax + v1[1] * bx + v1[2] * cx;
+    double y1 = v1[0] * ay + v1[1] * by + v1[2] * cy;
+    double x2 = v2[0] * ax + v2[1] * bx + v2[2] * cx;
+    double y2 = v2[0] * ay + v2[1] * by + v2[2] * cy;
+    if (x1 == x2)
+    {
+      if (x1 < 0 || x1 > width)
+        return;
+      g.drawLine((int) Math.round(x1), 0, (int) Math.round(x1), height);
+      return;
+    }
+    if (y1 == y2)
+    {
+      if (y1 < 0 || y1 > height)
+        return;
+      g.drawLine(0, (int) Math.round(y1), width, (int) Math.round(y1));
+      return;
+    }
+    int topCoord = (int) (Math.round((x1 * y2 - x2 * y1) / (y2 - y1)));
+    int bottomCoord = (int) (Math.round((x1 * (height - y2) - x2 * (height - y1)) / (y1 - y2)));
+    int leftCoord = (int) (Math.round((y1 * x2 - y2 * x1) / (x2 - x1)));
+    int rightCoord = (int) (Math.round((y1 * (width - x2) - y2 * (width - x1)) / (x1 - x2)));
+    boolean top = topCoord >= 0 && topCoord <= width;
+    boolean bottom = bottomCoord >= 0 && bottomCoord <= width;
+    boolean left = leftCoord >= 0 && leftCoord <= height;
+    boolean right = rightCoord >= 0 && rightCoord <= height;
+    if (top && bottom)
+      g.drawLine(topCoord, 0, bottomCoord, height);
+    else if (top && left)
+      g.drawLine(topCoord, 0, 0, leftCoord);
+    else if (top && right)
+      g.drawLine(topCoord, 0, width, rightCoord);
+    else if (bottom && left)
+      g.drawLine(bottomCoord, height, 0, leftCoord);
+    else if (bottom & right)
+      g.drawLine(bottomCoord, height, width, rightCoord);
+    else if (left && right)
+        g.drawLine(0, leftCoord, width, rightCoord);
   }
 }

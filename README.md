@@ -12,4 +12,4 @@ Contributing may require a solid background in Euclidean and projective geometry
 * [Circles in barycentric coordinates](https://pdfs.semanticscholar.org/4563/00961af8c3ae6fc53a07b1dd400876b73940.pdf) by Vladimir Volenec gives equations and properties of circles in barycentric coordinates.
 
 #### Functionalities
-Currently, most features of points, lines, and circles have been implemented, with homogenous integer polynomials representing the coordinates of these objects.
+Currently, most features of points, lines, and circles have been implemented, with homogenous integer polynomials representing the coordinates of these objects. In the most recent update, a rudimentary diagram drawing tool has been implemented with a diagram of a triangle and its nine-point-circle and Euler line contained in `GeoScreen.java`. Eventually, we want to build the functionalities of an app like Geogebra into it.

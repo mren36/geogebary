@@ -3,7 +3,7 @@
 public class HomogenousPolynomial
 {
   private int[][] poly; // an array that stores the coefficients of the polynomial
-                        // poly[i][j] denotes the coefficient of x^iy^jz^(d-i-j)
+                        // poly[i][j] denotes the coefficient of a^ib^jc^(d-i-j)
                         // where d is the degree of the polynomial
 
   public HomogenousPolynomial(int d) // returns a polynomial of degree d with coefficients all 0
@@ -81,7 +81,7 @@ public class HomogenousPolynomial
         newPoly[i][j] = poly[i][j] / c;
     return new HomogenousPolynomial(newPoly);
   }
-  
+
   public static int gcd(int a, int b) // static helper method for gcd(), returns gcd of two integers
   {
     if (a == 0)
@@ -142,6 +142,15 @@ public class HomogenousPolynomial
   public boolean equals(HomogenousPolynomial other) // returns whether the polynomial has the same coefficients as other
   {
     return minus(other).equalsZero();
+  }
+
+  public double eval(double a, double b, double c)
+  {
+    double p = 0;
+    for (int i = 0; i <= degree(); i++)
+      for (int j = 0; j <= degree(); j++)
+      p += poly[i][j] * Math.pow(a, i) * Math.pow(b, j) * Math.pow(c, degree() - i - j);
+    return p;
   }
 
   public String toString() // returns the String form of the polynomial, ordered lexicographically as a>b>c

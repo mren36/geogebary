@@ -1,5 +1,8 @@
 // a class that represents a point with barycentric coordinates (x : y : z) for some HomogenousVector (x, y, z)
 
+import java.awt.*;
+import javax.swing.*;
+
 public class Point
 {
   private HomogenousVector coords; // stores the coordinates of the point
@@ -108,5 +111,16 @@ public class Point
     HomogenousPolynomial pow = c.getCoeff().times(new HomogenousPolynomial("a^2").times(coords.getY().times(coords.getZ())).plus(new HomogenousPolynomial("b^2").times(coords.getZ().times(coords.getX()))).plus(new HomogenousPolynomial("c^2").times(coords.getX().times(coords.getY()))));
     HomogenousPolynomial rad = weight().times(coords.dot(c.getRadCoeffs()));
     return pow.equals(rad);
+  }
+
+  public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy) // draws the point in g given coordinates of triangle
+  {
+    double a = Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy));
+    double b = Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay));
+    double c = Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+    double[] v = coords.eval(a, b, c);
+    int x = (int) Math.round(v[0] * ax + v[1] * bx + v[2] * cx);
+    int y = (int) Math.round(v[0] * ay + v[1] * by + v[2] * cy);
+    g.fillOval(x - 3, y - 3, 6, 6);
   }
 }

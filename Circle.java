@@ -1,6 +1,9 @@
 // represents a circle with barycentric equation k(a^2yz+b^2zx+c^2xy)=(x+y+z)(ux+vy+wz)
 // k, u, v, w are integer coefficient homogenous polynomials with deg(k)+2=deg(u)=deg(v)=deg(w)
 
+import java.awt.*;
+import javax.swing.*;
+
 public class Circle
 {
   private HomogenousPolynomial coeff; // represents the k coefficient in front of the left hand side in the equation above
@@ -112,5 +115,44 @@ public class Circle
   public boolean isTangent(Circle other) // returns whether this and other are tangent
   {
     return Geometry.isTangent(this, other);
+  }
+
+  public HomogenousPolynomial[] radSqu()
+  {
+    HomogenousPolynomial[] frac = new HomogenousPolynomial[2];
+    HomogenousPolynomial area16 = new HomogenousPolynomial("-a^4-b^4-c^4+2a^2b^2+2b^2c^2+2a^2c^2");
+    HomogenousPolynomial squSum = new HomogenousPolynomial("a^2+b^2+c^2");
+    HomogenousPolynomial squA = new HomogenousPolynomial("-a^2+b^2+c^2");
+    HomogenousPolynomial squB = new HomogenousPolynomial("a^2-b^2+c^2");
+    HomogenousPolynomial squC = new HomogenousPolynomial("a^2+b^2-c^2");
+    HomogenousPolynomial squAB = squA.times(squB);
+    HomogenousPolynomial squBC = squB.times(squC);
+    HomogenousPolynomial squCA = squC.times(squA);
+    HomogenousPolynomial squABC = squA.times(squBC);
+    HomogenousPolynomial u = radCoeffs.getX();
+    HomogenousPolynomial v = radCoeffs.getY();
+    HomogenousPolynomial w = radCoeffs.getZ();
+    HomogenousPolynomial f = coeff;
+    HomogenousPolynomial f2 = coeff.pow(2);
+    HomogenousPolynomial uv2 = u.minus(v).pow(2);
+    HomogenousPolynomial vw2 = v.minus(w).pow(2);
+    HomogenousPolynomial wu2 = w.minus(u).pow(2);
+    frac[0] = (squSum.times(area16).times(f2)).minus(squABC.times(f2)).plus(squA.times(vw2).times(4)).plus(squB.times(wu2).times(4)).plus(squC.times(uv2).times(4)).minus(radCoeffs.weight().times(area16).times(4).times(f)).plus(squBC.times(u).times(f).times(4)).plus(squCA.times(v).times(f).times(4)).plus(squAB.times(w).times(f).times(4));
+    frac[1] = area16.times(8).times(f2);
+    System.out.println();
+    return frac;
+  }
+
+  public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy)
+  {
+    HomogenousPolynomial[] rad = radSqu();
+    double a = Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy));
+    double b = Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay));
+    double c = Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+    double[] centerV = center().getCoords().eval(a, b, c);
+    int centerX = (int) Math.round(centerV[0] * ax + centerV[1] * bx + centerV[2] * cx);
+    int centerY = (int) Math.round(centerV[0] * ay + centerV[1] * by + centerV[2] * cy);
+    int r = (int) Math.round(Math.sqrt(rad[0].eval(a, b, c) / rad[1].eval(a, b, c)));
+    g.drawOval(centerX - r, centerY - r, 2 * r, 2 * r);
   }
 }

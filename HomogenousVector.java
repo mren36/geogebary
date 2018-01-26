@@ -145,4 +145,17 @@ public class HomogenousVector
   {
     return x.plus(y.plus(z));
   }
+
+  public double[] eval(double a, double b, double c)
+  {
+    double[] v = new double[3];
+    v[0] = getX().eval(a, b, c);
+    v[1] = getY().eval(a, b, c);
+    v[2] = getZ().eval(a, b, c);
+    double weight = v[0] + v[1] + v[2];
+    v[0] /= weight;
+    v[1] /= weight;
+    v[2] /= weight;
+    return v;
+  }
 }

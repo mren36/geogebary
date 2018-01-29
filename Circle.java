@@ -143,6 +143,29 @@ public class Circle
     return frac;
   }
 
+  public Line polar(Point P)
+  {
+    Point O = center();
+    if (P.equals(O))
+      return Geometry.INF_LINE;
+    return Geometry.radAxis(this, new Circle(O, P));
+  }
+
+  public Point inverse(Point P)
+  {
+    Point O = center();
+    if (P.equals(O))
+      throw new IllegalArgumentException("cannot invert center");
+    if (P.on(Geometry.INF_LINE))
+      throw new IllegalArgumentException("cannot invert infinity point");
+    return Geometry.foot(O, Geometry.radAxis(this, new Circle(O, P)));
+  }
+
+  public Point pole(Line l)
+  {
+    return inverse(Geometry.foot(center(), l));
+  }
+
   public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy)
   {
     HomogenousPolynomial[] rad = radSqu();

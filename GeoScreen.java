@@ -2,14 +2,15 @@
 
 import java.util.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
-public class GeoScreen extends JPanel
+public class GeoScreen extends JPanel implements MouseListener
 {
-  private int ax = 300, ay = 50, bx = 100, by = 500, cx = 550, cy = 500; // stores coordinates of the triangles
-  private ArrayList<Point> points = new ArrayList<Point>(); // stores points in the diagram
-  private ArrayList<Line> lines = new ArrayList<Line>(); // stores lines in the diagram
-  private ArrayList<Circle> circles = new ArrayList<Circle>(); // stores circles in the diagram
+  private int ax = 250, ay = 325, bx = 200, by = 550, cx = 500, cy = 550; // stores coordinates of the triangles
+  private Set<Point> points = new HashSet<Point>(); // stores points in the diagram
+  private Set<Line> lines = new HashSet<Line>(); // stores lines in the diagram
+  private Set<Circle> circles = new HashSet<Circle>(); // stores circles in the diagram
   private static Point A = new Point("1", "0", "0");
   private static Point B = new Point("0", "1", "0");
   private static Point C = new Point("0", "0", "1");
@@ -27,17 +28,18 @@ public class GeoScreen extends JPanel
     lines.add(a);
     lines.add(b);
     lines.add(c);
+    addMouseListener(this);
   }
 
   public void paintComponent(Graphics g)
   {
     super.paintComponent(g);
-    for (int i = 0; i < points.size(); i++)
-      points.get(i).draw(g, ax, ay, bx, by, cx, cy);
-    for (int i = 0; i < lines.size(); i++)
-      lines.get(i).draw(g, ax, ay, bx, by, cx, cy, width, height);
-    for (int i = 0; i < circles.size(); i++)
-      circles.get(i).draw(g, ax, ay, bx, by, cx, cy);
+    for (Point P : points)
+      P.draw(g, ax, ay, bx, by, cx, cy);
+    for (Line l : lines)
+      l.draw(g, ax, ay, bx, by, cx, cy, width, height);
+    for (Circle c : circles)
+      c.draw(g, ax, ay, bx, by, cx, cy);
   }
 
   public void add(Point P)
@@ -134,5 +136,31 @@ public class GeoScreen extends JPanel
 
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     window.setVisible(true);
+  }
+
+  public void mouseExited(MouseEvent e)
+  {
+
+  }
+
+  public void mouseEntered(MouseEvent e)
+  {
+
+  }
+
+  public void mouseReleased(MouseEvent e)
+  {
+
+  }
+
+  public void mousePressed(MouseEvent e)
+  {
+
+  }
+
+  public void mouseClicked(MouseEvent e)
+  {
+    int x = e.getX();
+    int y = e.getY();
   }
 }

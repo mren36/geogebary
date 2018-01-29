@@ -1,4 +1,4 @@
-# Open Source Project (name tbd.)
+# Geogebary
 ## Mike Ren
 ### CSC630, Winter 2018
 

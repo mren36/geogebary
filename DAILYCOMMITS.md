@@ -27,3 +27,6 @@ A log of all daily commits for the _CSC630 The Open Source Movement_ class.
 #### January 29, 2018
 * made invert and pole/polar function
 * made a name
+
+#### January 30, 2018
+* added .DS_Store to .gitnore

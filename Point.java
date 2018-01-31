@@ -123,4 +123,42 @@ public class Point
     int y = (int) Math.round(v[0] * ay + v[1] * by + v[2] * cy);
     g.fillOval(x - 3, y - 3, 6, 6);
   }
+
+  // Simplified average Method
+  public Point averageS(Point P2, int w1, int w2)
+  {
+    return Geometry.average(this, P2, w1, w2);
+  }
+
+  // Simplified midpoint Method
+  public Point midpointS(Point P2) // returns the midpoint of P1 and P2
+  {
+    return Geometry.midpoint(this, P2)
+  }
+
+  // Simplified reflect Method
+  public Point reflectS(Point P2) // returns the reflection of P1 over P2
+  {
+    return Geometry.reflect(this, P2);
+  }
+
+  public Point polyAverageS(Point P2, HomogenousPolynomial w1, HomogenousPolynomial w2)
+  {
+    return Geometry.polyAverage(this, P2, w1, w2);
+  }
+
+  public Point footS(Point P1, Point P2) // returns the foot from P to the line through P1 and P2
+  {
+    return Geometry.foot(this, P1, P2);
+  }
+
+  public Point centroidS(Point P2, Point P3) // returns the centroid of triangle P1P2P3
+  {
+    return Geometry.centroid(this, P2, P3);
+  }
+
+  public Point circumcenterS(Point P1, Point P2, Point P3)
+  {
+    return Geometry.circumcenter(this, P2, P3);
+  }
 }

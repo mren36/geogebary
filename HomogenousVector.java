@@ -50,10 +50,10 @@ public class HomogenousVector
 
   public void reduce() // factors out the gcd of the coefficients of the polynomial
   {
-    int Xgcd = x.gcd();
-    int Ygcd = y.gcd();
-    int Zgcd = z.gcd();
-    int gcd = HomogenousPolynomial.gcd(Xgcd, HomogenousPolynomial.gcd(Ygcd, Zgcd));
+    long Xgcd = x.gcd();
+    long Ygcd = y.gcd();
+    long Zgcd = z.gcd();
+    long gcd = HomogenousPolynomial.gcd(Xgcd, HomogenousPolynomial.gcd(Ygcd, Zgcd));
     if (gcd != 0)
     {
       x = x.div(gcd);
@@ -74,7 +74,7 @@ public class HomogenousVector
     return new HomogenousVector(x.plus(other.x), y.plus(other.y), z.plus(other.z));
   }
 
-  public HomogenousVector times(int c) // multiplies the vector by an integer, to each component
+  public HomogenousVector times(long c) // multiplies the vector by an integer, to each component
   {
     return new HomogenousVector(x.times(c), y.times(c), z.times(c));
   }

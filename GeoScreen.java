@@ -17,8 +17,8 @@ public class GeoScreen extends JPanel implements MouseListener
   private static Line a = new Line("1", "0", "0");
   private static Line b = new Line("0", "1", "0");
   private static Line c = new Line("0", "0", "1");
-  private static int width = 800;
-  private static int height = 800;
+  private static int width = 1500;
+  private static int height = 1500;
 
   public GeoScreen(int width, int height)
   {

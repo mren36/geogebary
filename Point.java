@@ -123,4 +123,9 @@ public class Point
     int y = (int) Math.round(v[0] * ay + v[1] * by + v[2] * cy);
     g.fillOval(x - 3, y - 3, 6, 6);
   }
+
+  public Line polar(Circle c)
+  {
+    return c.polar(this);
+  }
 }

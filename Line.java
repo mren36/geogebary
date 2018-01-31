@@ -173,4 +173,9 @@ public class Line
     else if (left && right)
         g.drawLine(0, leftCoord, width, rightCoord);
   }
+
+  public Point pole(Circle c)
+  {
+    return c.pole(this);
+  }
 }

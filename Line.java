@@ -2,6 +2,7 @@
 
 import java.awt.*;
 import javax.swing.*;
+import java.math.*;
 
 public class Line
 {
@@ -129,11 +130,19 @@ public class Line
       P1 = new Point(this, new Line("0", "1", "0"));
       P2 = new Point(this, new Line("0", "0", "1"));
     }
-    double a = Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy));
-    double b = Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay));
-    double c = Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
-    double[] v1 = P1.getCoords().eval(a, b, c);
-    double[] v2 = P2.getCoords().eval(a, b, c);
+    int a = (int) Math.round(Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy)));
+    int b = (int) Math.round(Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay)));
+    int c = (int) Math.round(Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by)));
+    BigDecimal[] u1 = P1.getCoords().eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""));
+    BigDecimal[] u2 = P2.getCoords().eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""));
+    double[] v1 = new double[3];
+    double[] v2 = new double[3];
+    v1[0] = u1[0].doubleValue();
+    v1[1] = u1[1].doubleValue();
+    v1[2] = u1[2].doubleValue();
+    v2[0] = u2[0].doubleValue();
+    v2[1] = u2[1].doubleValue();
+    v2[2] = u2[2].doubleValue();
     double x1 = v1[0] * ax + v1[1] * bx + v1[2] * cx;
     double y1 = v1[0] * ay + v1[1] * by + v1[2] * cy;
     double x2 = v2[0] * ax + v2[1] * bx + v2[2] * cx;

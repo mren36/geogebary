@@ -1,17 +1,19 @@
 // a class that represents a homogenous polynomial with integer coefficients in three variables a, b, c
 
+import java.math.*;
+
 public class HomogenousPolynomial
 {
-  private long[][] poly; // an array that stores the coefficients of the polynomial
+  private BigInteger[][] poly; // an array that stores the coefficients of the polynomial
                         // poly[i][j] denotes the coefficient of a^ib^jc^(d-i-j)
                         // where d is the degree of the polynomial
 
   public HomogenousPolynomial(int d) // returns a polynomial of degree d with coefficients all 0
   {
-    poly = new long[d + 1][d + 1];
+    poly = new BigInteger[d + 1][d + 1];
   }
 
-  public HomogenousPolynomial(long[][] poly) // returns a polynomial with coefficients specified by the array
+  public HomogenousPolynomial(BigInteger[][] poly) // returns a polynomial with coefficients specified by the array
   {
     if (poly.length != poly[0].length)
       throw new IllegalArgumentException("number of rows must equal number of columns");
@@ -35,15 +37,18 @@ public class HomogenousPolynomial
     String[] monomials = s.split("\\+");
     if (monomials.length == 0)
       throw new IllegalArgumentException("string cannot be empty");
-    long[] leadingTerm = coeffPow(monomials[0]);
-    int degree = (int) (leadingTerm[1] + leadingTerm[2] + leadingTerm[3]);
-    long[][] poly = new long[degree + 1][degree + 1];
+    BigInteger[] leadingTerm = coeffPow(monomials[0]);
+    int degree = leadingTerm[1].add(leadingTerm[2].add(leadingTerm[3])).intValue();
+    BigInteger[][] poly = new BigInteger[degree + 1][degree + 1];
+    for (int i = 0; i <= degree; i++)
+      for (int j = 0; j <= degree; j++)
+        poly[i][j] = BigInteger.ZERO;
     for (int i = 0; i < monomials.length; i++)
     {
-      long[] term = coeffPow(monomials[i]);
-      if (term[1] + term[2] + term[3] != degree)
+      BigInteger[] term = coeffPow(monomials[i]);
+      if (term[1].add(term[2].add(term[3])).intValue() != degree)
         throw new IllegalArgumentException("polynomial must be homogenous");
-      poly[(int) term[1]][(int) term[2]] += term[0];
+      poly[term[1].intValue()][term[2].intValue()] = poly[term[1].intValue()][term[2].intValue()].add(term[0]);
     }
     this.poly = poly;
   }
@@ -57,62 +62,56 @@ public class HomogenousPolynomial
   {
     if (this.degree() != other.degree())
       throw new IllegalArgumentException("degrees must be the same");
-    long[][] newPoly = new long[degree() + 1][degree() + 1];
+    BigInteger[][] newPoly = new BigInteger[degree() + 1][degree() + 1];
     for (int i = 0; i <= degree(); i++)
       for (int j = 0; j <= degree(); j++)
-        newPoly[i][j] = poly[i][j] + other.poly[i][j];
+        newPoly[i][j] = poly[i][j].add(other.poly[i][j]);
     return new HomogenousPolynomial(newPoly);
   }
 
-  public HomogenousPolynomial times(long c) // returns the product of the polynomial and an integer c
+  public HomogenousPolynomial times(BigInteger c) // returns the product of the polynomial and an integer c
   {
-    long[][] newPoly = new long[degree() + 1][degree() + 1];
+    BigInteger[][] newPoly = new BigInteger[degree() + 1][degree() + 1];
     for (int i = 0; i <= degree(); i++)
       for (int j = 0; j <= degree(); j++)
-        newPoly[i][j] = c * poly[i][j];
+        newPoly[i][j] = c.multiply(poly[i][j]);
     return new HomogenousPolynomial(newPoly);
   }
 
-  public HomogenousPolynomial div(long c) // returns the quotient of the polynomial and an integer c
+  public HomogenousPolynomial div(BigInteger c) // returns the quotient of the polynomial and an integer c
   {
-    long[][] newPoly = new long[degree() + 1][degree() + 1];
+    BigInteger[][] newPoly = new BigInteger[degree() + 1][degree() + 1];
     for (int i = 0; i <= degree(); i++)
       for (int j = 0; j <= degree(); j++)
-        newPoly[i][j] = poly[i][j] / c;
+        newPoly[i][j] = poly[i][j].divide(c);
     return new HomogenousPolynomial(newPoly);
   }
 
-  public static long gcd(long a, long b) // static helper method for gcd(), returns gcd of two integers
+  public BigInteger gcd() // returns the gcd of the coefficients of the polynomial, defined to be 0 if all coefficients are 0
   {
-    if (a == 0)
-      return b;
-    if (b == 0)
-      return a;
-    return gcd(b, a%b);
-  }
-
-  public long gcd() // returns the gcd of the coefficients of the polynomial, defined to be 0 if all coefficients are 0
-  {
-    long gcd = 0;
+    BigInteger gcd = BigInteger.ZERO;
     for (int i = 0; i <= degree(); i++)
       for (int j = 0; j <= degree(); j++)
-        gcd = gcd(gcd, poly[i][j]);
+        gcd = gcd.gcd(poly[i][j]);
     return gcd;
   }
 
   public HomogenousPolynomial minus(HomogenousPolynomial other) // returns the polynomial difference between this and other
   {
-    return plus(other.times(-1));
+    return plus(other.times(new BigInteger("-1")));
   }
 
   public HomogenousPolynomial times(HomogenousPolynomial other) // returns the polynomial product of this and other
   {
-    long[][] newPoly = new long[degree() + other.degree() + 1][degree() + other.degree() + 1];
+    BigInteger[][] newPoly = new BigInteger[degree() + other.degree() + 1][degree() + other.degree() + 1];
+    for (int i = 0; i < newPoly.length; i++)
+      for (int j = 0; j < newPoly.length; j++)
+        newPoly[i][j] = BigInteger.ZERO;
     for (int i1 = degree() + 1; i1 >= 0; i1--)
       for (int j1 = degree() - i1; j1 >= 0; j1--)
         for (int i2 = other.degree() + 1; i2 >= 0; i2--)
           for (int j2 = other.degree() - i2; j2 >= 0; j2--)
-            newPoly[i1 + i2][j1 + j2] += poly[i1][j1] * other.poly[i2][j2];
+            newPoly[i1 + i2][j1 + j2] = newPoly[i1 + i2][j1 + j2].add(poly[i1][j1].multiply(other.poly[i2][j2]));
     return new HomogenousPolynomial(newPoly);
   }
 
@@ -134,7 +133,7 @@ public class HomogenousPolynomial
   {
     for (int i = 0; i <= degree(); i++)
       for (int j = 0; j <= degree(); j++)
-        if (poly[i][j] != 0)
+        if (!poly[i][j].equals(BigInteger.ZERO))
           return false;
     return true;
   }
@@ -144,12 +143,21 @@ public class HomogenousPolynomial
     return minus(other).equalsZero();
   }
 
-  public double eval(double a, double b, double c)
+  public BigInteger eval(BigInteger a, BigInteger b, BigInteger c)
   {
-    double p = 0;
+    BigInteger p = BigInteger.ZERO;
     for (int i = 0; i <= degree(); i++)
-      for (int j = 0; j <= degree(); j++)
-      p += poly[i][j] * Math.pow(a, i) * Math.pow(b, j) * Math.pow(c, degree() - i - j);
+      for (int j = 0; j <= degree() - i; j++)
+      p = p.add(a.pow(i).multiply(b.pow(j)).multiply(c.pow(degree() - i - j)).multiply(poly[i][j]));
+    return p;
+  }
+
+  public BigDecimal eval(BigDecimal a, BigDecimal b, BigDecimal c)
+  {
+    BigDecimal p = BigDecimal.ZERO;
+    for (int i = 0; i <= degree(); i++)
+      for (int j = 0; j <= degree() - i; j++)
+      p = p.add(a.pow(i).multiply(b.pow(j)).multiply(c.pow(degree() - i - j)).multiply(new BigDecimal(poly[i][j])));
     return p;
   }
 
@@ -159,7 +167,7 @@ public class HomogenousPolynomial
     int d = this.degree();
     for (int i = d + 1; i >= 0; i--)
       for (int j = d - i; j >= 0; j--)
-        if (poly[i][j] != 0)
+        if (poly[i][j] != BigInteger.ZERO)
           polyString += "+" + poly[i][j] + "a^" + i + "b^" + j + "c^" + (d - i - j);
     if (polyString.equals(""))
       return "0";
@@ -279,17 +287,17 @@ public class HomogenousPolynomial
     return s;
   }
 
-  private static long[] coeffPow(String monomial) // private helper method for toString(), returns coefficient and powers of a monomial
+  private static BigInteger[] coeffPow(String monomial) // private helper method for toString(), returns coefficient and powers of a monomial
   {
     int aIndex = monomial.indexOf("a");
     int bIndex = monomial.indexOf("b");
     int cIndex = monomial.indexOf("c");
     if ((aIndex >= 0 && bIndex >= 0 && aIndex > bIndex) || (bIndex >= 0 && cIndex >= 0 && bIndex > cIndex) || (aIndex >= 0 && cIndex >= 0 && aIndex > cIndex))
       throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
-    long coeffLong = 0;
-    long aPow = 0;
-    long bPow = 0;
-    long cPow = 0;
+    BigInteger coeffLong = BigInteger.ZERO;
+    BigInteger aPow = BigInteger.ZERO;
+    BigInteger bPow = BigInteger.ZERO;
+    BigInteger cPow = BigInteger.ZERO;
     String coeff = "";
     String a = "";
     String b = "";
@@ -356,23 +364,23 @@ public class HomogenousPolynomial
     }
     try
     {
-      coeffLong = Long.parseLong(coeff);
+      coeffLong = new BigInteger(coeff);
     }
     catch (NumberFormatException e)
     {
       throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
     }
     if (a.equals(""))
-      aPow = 0;
+      aPow = BigInteger.ZERO;
     else if (a.equals("a"))
-      aPow = 1;
+      aPow = BigInteger.ONE;
     else
     {
       if (a.charAt(1) == '^')
         try
         {
-          aPow = Long.parseLong(a.substring(2));
-          if (aPow < 0)
+          aPow = new BigInteger(a.substring(2));
+          if (aPow.compareTo(BigInteger.ZERO) < 0)
             throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
         }
         catch (NumberFormatException e)
@@ -383,16 +391,16 @@ public class HomogenousPolynomial
         throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
     }
     if (b.equals(""))
-      bPow = 0;
+      bPow = BigInteger.ZERO;
     else if (b.equals("b"))
-      bPow = 1;
+      bPow = BigInteger.ONE;
     else
     {
       if (b.charAt(1) == '^')
         try
         {
-          bPow = Long.parseLong(b.substring(2));
-          if (bPow < 0)
+          bPow = new BigInteger(b.substring(2));
+          if (bPow.compareTo(BigInteger.ZERO) < 0)
             throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
         }
         catch (NumberFormatException e)
@@ -403,16 +411,16 @@ public class HomogenousPolynomial
         throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
     }
     if (c.equals(""))
-      cPow = 0;
+      cPow = BigInteger.ZERO;
     else if (c.equals("c"))
-      cPow = 1;
+      cPow = BigInteger.ONE;
     else
     {
       if (c.charAt(1) == '^')
         try
         {
-          cPow = Long.parseLong(c.substring(2));
-          if (cPow < 0)
+          cPow = new BigInteger(c.substring(2));
+          if (cPow.compareTo(BigInteger.ZERO) < 0)
             throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
         }
         catch (NumberFormatException e)
@@ -422,7 +430,7 @@ public class HomogenousPolynomial
       else
         throw new IllegalArgumentException("monomial must be of form Ia^Nb^Nc^N where I is an integer, N is nonnegative integer");
     }
-    long[] mono = new long[4];
+    BigInteger[] mono = new BigInteger[4];
     mono[0] = coeffLong;
     mono[1] = aPow;
     mono[2] = bPow;

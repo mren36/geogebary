@@ -1,5 +1,7 @@
 // a class that represents a vector of 3 homogenous polynomials of the same degree
 
+import java.math.*;
+
 public class HomogenousVector
 {
   private HomogenousPolynomial x; // the first polynomial
@@ -50,11 +52,11 @@ public class HomogenousVector
 
   public void reduce() // factors out the gcd of the coefficients of the polynomial
   {
-    long Xgcd = x.gcd();
-    long Ygcd = y.gcd();
-    long Zgcd = z.gcd();
-    long gcd = HomogenousPolynomial.gcd(Xgcd, HomogenousPolynomial.gcd(Ygcd, Zgcd));
-    if (gcd != 0)
+    BigInteger Xgcd = x.gcd();
+    BigInteger Ygcd = y.gcd();
+    BigInteger Zgcd = z.gcd();
+    BigInteger gcd = Xgcd.gcd(Ygcd.gcd(Zgcd));
+    if (gcd != BigInteger.ZERO)
     {
       x = x.div(gcd);
       y = y.div(gcd);
@@ -74,7 +76,7 @@ public class HomogenousVector
     return new HomogenousVector(x.plus(other.x), y.plus(other.y), z.plus(other.z));
   }
 
-  public HomogenousVector times(long c) // multiplies the vector by an integer, to each component
+  public HomogenousVector times(BigInteger c) // multiplies the vector by an integer, to each component
   {
     return new HomogenousVector(x.times(c), y.times(c), z.times(c));
   }
@@ -146,16 +148,29 @@ public class HomogenousVector
     return x.plus(y.plus(z));
   }
 
-  public double[] eval(double a, double b, double c)
+  public BigDecimal[] eval(BigInteger a, BigInteger b, BigInteger c)
   {
-    double[] v = new double[3];
+    BigDecimal[] v = new BigDecimal[3];
+    v[0] = new BigDecimal(getX().eval(a, b, c));
+    v[1] = new BigDecimal(getY().eval(a, b, c));
+    v[2] = new BigDecimal(getZ().eval(a, b, c));
+    BigDecimal weight = v[0].add(v[1].add(v[2]));
+    v[0] = v[0].divide(weight, new MathContext(10));
+    v[1] = v[1].divide(weight, new MathContext(10));
+    v[2] = v[2].divide(weight, new MathContext(10));
+    return v;
+  }
+
+  public BigDecimal[] eval(BigDecimal a, BigDecimal b, BigDecimal c)
+  {
+    BigDecimal[] v = new BigDecimal[3];
     v[0] = getX().eval(a, b, c);
     v[1] = getY().eval(a, b, c);
     v[2] = getZ().eval(a, b, c);
-    double weight = v[0] + v[1] + v[2];
-    v[0] /= weight;
-    v[1] /= weight;
-    v[2] /= weight;
+    BigDecimal weight = v[0].add(v[1].add(v[2]));
+    v[0] = v[0].divide(weight, 10, BigDecimal.ROUND_HALF_UP);
+    v[1] = v[1].divide(weight, 10, BigDecimal.ROUND_HALF_UP);
+    v[2] = v[2].divide(weight, 10, BigDecimal.ROUND_HALF_UP);
     return v;
   }
 }

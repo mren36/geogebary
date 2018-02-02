@@ -7,7 +7,7 @@ import javax.swing.*;
 
 public class GeoScreen extends JPanel implements MouseListener
 {
-  private int ax = 250, ay = 325, bx = 200, by = 550, cx = 500, cy = 550; // stores coordinates of the triangles
+  private int ax = 400, ay = 100, bx = 275, by = 400, cx = 625, cy = 400; // stores coordinates of the triangles
   private Set<Point> points = new HashSet<Point>(); // stores points in the diagram
   private Set<Line> lines = new HashSet<Line>(); // stores lines in the diagram
   private Set<Circle> circles = new HashSet<Circle>(); // stores circles in the diagram

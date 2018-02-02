@@ -1,5 +1,7 @@
 // static class with useful methods for geometric constructions
 
+import java.math.*;
+
 public class Geometry
 {
   public static final Line INF_LINE = new Line("1", "1", "1"); // static final variable storing the line at infinity
@@ -7,7 +9,7 @@ public class Geometry
   public static Point average(Point P1, Point P2, int w1, int w2) // returns the weighted average Q of two points
                                                                   // such that QP1 : QP2 = w1 : w2 (distances directed)
   {
-    HomogenousVector v = P1.getCoords().times(w1).times(P2.weight()).plus(P2.getCoords().times(-w2).times(P1.weight()));
+    HomogenousVector v = P1.getCoords().times(new BigInteger(w1 + "")).times(P2.weight()).plus(P2.getCoords().times(new BigInteger(-w2 + "")).times(P1.weight()));
     v.reduce();
     return new Point(v);
   }
@@ -25,7 +27,7 @@ public class Geometry
   public static Point polyAverage(Point P1, Point P2, HomogenousPolynomial w1, HomogenousPolynomial w2) // returns the weighted average of
                                                                                                         // the points by two polynomials
   {
-    HomogenousVector v = P1.getCoords().times(w1).plus(P2.getCoords().times(w2.times(-1)));
+    HomogenousVector v = P1.getCoords().times(w1).plus(P2.getCoords().times(w2.times(new BigInteger("-1"))));
     v.reduce();
     return new Point(v);
   }
@@ -170,15 +172,15 @@ public class Geometry
     HomogenousPolynomial power1 = squ.dot(new HomogenousVector(y1.times(z1), z1.times(x1), x1.times(y1)));
     HomogenousPolynomial power2 = squ.dot(new HomogenousVector(y2.times(z2), z2.times(x2), x2.times(y2)));
     HomogenousPolynomial power3 = squ.dot(new HomogenousVector(y3.times(z3), z3.times(x3), x3.times(y3)));
-    HomogenousPolynomial X1 = y2.times(z3).plus(y3.times(z2).times(-1)).times(weight2).times(weight3).times(power1);
-    HomogenousPolynomial X2 = y3.times(z1).plus(y1.times(z3).times(-1)).times(weight3).times(weight1).times(power2);
-    HomogenousPolynomial X3 = y1.times(z2).plus(y2.times(z1).times(-1)).times(weight1).times(weight2).times(power3);
-    HomogenousPolynomial Y1 = z2.times(x3).plus(z3.times(x2).times(-1)).times(weight2).times(weight3).times(power1);
-    HomogenousPolynomial Y2 = z3.times(x1).plus(z1.times(x3).times(-1)).times(weight3).times(weight1).times(power2);
-    HomogenousPolynomial Y3 = z1.times(x2).plus(z2.times(x1).times(-1)).times(weight1).times(weight2).times(power3);
-    HomogenousPolynomial Z1 = x2.times(y3).plus(x3.times(y2).times(-1)).times(weight2).times(weight3).times(power1);
-    HomogenousPolynomial Z2 = x3.times(y1).plus(x1.times(y3).times(-1)).times(weight3).times(weight1).times(power2);
-    HomogenousPolynomial Z3 = x1.times(y2).plus(x2.times(y1).times(-1)).times(weight1).times(weight2).times(power3);
+    HomogenousPolynomial X1 = y2.times(z3).plus(y3.times(z2).times(new BigInteger("-1"))).times(weight2).times(weight3).times(power1);
+    HomogenousPolynomial X2 = y3.times(z1).plus(y1.times(z3).times(new BigInteger("-1"))).times(weight3).times(weight1).times(power2);
+    HomogenousPolynomial X3 = y1.times(z2).plus(y2.times(z1).times(new BigInteger("-1"))).times(weight1).times(weight2).times(power3);
+    HomogenousPolynomial Y1 = z2.times(x3).plus(z3.times(x2).times(new BigInteger("-1"))).times(weight2).times(weight3).times(power1);
+    HomogenousPolynomial Y2 = z3.times(x1).plus(z1.times(x3).times(new BigInteger("-1"))).times(weight3).times(weight1).times(power2);
+    HomogenousPolynomial Y3 = z1.times(x2).plus(z2.times(x1).times(new BigInteger("-1"))).times(weight1).times(weight2).times(power3);
+    HomogenousPolynomial Z1 = x2.times(y3).plus(x3.times(y2).times(new BigInteger("-1"))).times(weight2).times(weight3).times(power1);
+    HomogenousPolynomial Z2 = x3.times(y1).plus(x1.times(y3).times(new BigInteger("-1"))).times(weight3).times(weight1).times(power2);
+    HomogenousPolynomial Z3 = x1.times(y2).plus(x2.times(y1).times(new BigInteger("-1"))).times(weight1).times(weight2).times(power3);
     HomogenousPolynomial radX = X1.plus(X2.plus(X3));
     HomogenousPolynomial radY = Y1.plus(Y2.plus(Y3));
     HomogenousPolynomial radZ = Z1.plus(Z2.plus(Z3));
@@ -215,7 +217,7 @@ public class Geometry
   {
     if (c1.equals(c2))
       throw new IllegalArgumentException("circles must be distinct");
-    return new Line(c2.getCoeff().times(c1.getRadCoeffs()).plus(c1.getCoeff().times(c2.getRadCoeffs().times(-1))));
+    return new Line(c2.getCoeff().times(c1.getRadCoeffs()).plus(c1.getCoeff().times(c2.getRadCoeffs().times(new BigInteger("-1")))));
   }
 
   public static Point radCenter(Circle c1, Circle c2, Circle c3) // returns the radical center of c1, c2, c3

@@ -2,6 +2,7 @@
 
 import java.awt.*;
 import javax.swing.*;
+import java.math.*;
 
 public class Point
 {
@@ -115,10 +116,14 @@ public class Point
 
   public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy) // draws the point in g given coordinates of triangle
   {
-    double a = Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy));
-    double b = Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay));
-    double c = Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
-    double[] v = coords.eval(a, b, c);
+    int a = (int) Math.round(Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy)));
+    int b = (int) Math.round(Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay)));
+    int c = (int) Math.round(Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by)));
+    BigDecimal[] u = coords.eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""));
+    double[] v = new double[3];
+    v[0] = u[0].doubleValue();
+    v[1] = u[1].doubleValue();
+    v[2] = u[2].doubleValue();
     int x = (int) Math.round(v[0] * ax + v[1] * bx + v[2] * cx);
     int y = (int) Math.round(v[0] * ay + v[1] * by + v[2] * cy);
     g.fillOval(x - 3, y - 3, 6, 6);
@@ -130,39 +135,39 @@ public class Point
   }
 
   // Simplified average Method
-  public Point averageS(Point P2, int w1, int w2)
+  public Point average(Point P2, int w1, int w2)
   {
     return Geometry.average(this, P2, w1, w2);
   }
 
   // Simplified midpoint Method
-  public Point midpointS(Point P2) // returns the midpoint of P1 and P2
+  public Point midpoint(Point P2) // returns the midpoint of P1 and P2
   {
     return Geometry.midpoint(this, P2);
   }
 
   // Simplified reflect Method
-  public Point reflectS(Point P2) // returns the reflection of P1 over P2
+  public Point reflect(Point P2) // returns the reflection of P1 over P2
   {
     return Geometry.reflect(this, P2);
   }
 
-  public Point polyAverageS(Point P2, HomogenousPolynomial w1, HomogenousPolynomial w2)
+  public Point polyAverage(Point P2, HomogenousPolynomial w1, HomogenousPolynomial w2)
   {
     return Geometry.polyAverage(this, P2, w1, w2);
   }
 
-  public Point footS(Point P1, Point P2) // returns the foot from P to the line through P1 and P2
+  public Point foot(Point P1, Point P2) // returns the foot from P to the line through P1 and P2
   {
     return Geometry.foot(this, P1, P2);
   }
 
-  public Point centroidS(Point P2, Point P3) // returns the centroid of triangle P1P2P3
+  public Point centroid(Point P2, Point P3) // returns the centroid of triangle P1P2P3
   {
     return Geometry.centroid(this, P2, P3);
   }
 
-  public Point circumcenterS(Point P1, Point P2, Point P3)
+  public Point circumcenter(Point P1, Point P2, Point P3)
   {
     return Geometry.circumcenter(this, P2, P3);
   }

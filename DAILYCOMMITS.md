@@ -30,3 +30,6 @@ A log of all daily commits for the _CSC630 The Open Source Movement_ class.
 
 #### January 30, 2018
 * added .DS_Store to .gitnore
+
+#### January 31, 2018
+* changed `int`s to `long`s

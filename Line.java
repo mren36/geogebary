@@ -107,7 +107,7 @@ public class Line
     return Geometry.isTangent(this, c);
   }
 
-  public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy, int width, int height) // draws the line in g given coefficients
+  public int[] screenCoords(int ax, int ay, int bx, int by, int cx, int cy, int width, int height) // draws the line in g given coefficients
   {
     Point P1, P2;
     if (equals(new Line("0", "0", "1")))
@@ -147,19 +147,22 @@ public class Line
     double y1 = v1[0] * ay + v1[1] * by + v1[2] * cy;
     double x2 = v2[0] * ax + v2[1] * bx + v2[2] * cx;
     double y2 = v2[0] * ay + v2[1] * by + v2[2] * cy;
+    int[] sC = new int[4];
     if (x1 == x2)
     {
-      if (x1 < 0 || x1 > width)
-        return;
-      g.drawLine((int) Math.round(x1), 0, (int) Math.round(x1), height);
-      return;
+      sC[0] = (int) Math.round(x1);
+      sC[1] = 0;
+      sC[2] = (int) Math.round(x1);
+      sC[3] = height;
+      return sC;
     }
     if (y1 == y2)
     {
-      if (y1 < 0 || y1 > height)
-        return;
-      g.drawLine(0, (int) Math.round(y1), width, (int) Math.round(y1));
-      return;
+      sC[0] = 0;
+      sC[1] = (int) Math.round(y1);
+      sC[2] = width;
+      sC[3] = (int) Math.round(y2);
+      return sC;
     }
     int topCoord = (int) (Math.round((x1 * y2 - x2 * y1) / (y2 - y1)));
     int bottomCoord = (int) (Math.round((x1 * (height - y2) - x2 * (height - y1)) / (y1 - y2)));
@@ -169,22 +172,58 @@ public class Line
     boolean bottom = bottomCoord >= 0 && bottomCoord <= width;
     boolean left = leftCoord >= 0 && leftCoord <= height;
     boolean right = rightCoord >= 0 && rightCoord <= height;
-    if (top && bottom)
-      g.drawLine(topCoord, 0, bottomCoord, height);
-    else if (top && left)
-      g.drawLine(topCoord, 0, 0, leftCoord);
-    else if (top && right)
-      g.drawLine(topCoord, 0, width, rightCoord);
+    if (left && right)
+    {
+      sC[0] = 0;
+      sC[1] = leftCoord;
+      sC[2] = width;
+      sC[3] = rightCoord;
+    }
+    else if (bottom && right)
+    {
+      sC[0] = bottomCoord;
+      sC[1] = height;
+      sC[2] = width;
+      sC[3] = rightCoord;
+    }
     else if (bottom && left)
-      g.drawLine(bottomCoord, height, 0, leftCoord);
-    else if (bottom & right)
-      g.drawLine(bottomCoord, height, width, rightCoord);
-    else if (left && right)
-        g.drawLine(0, leftCoord, width, rightCoord);
+    {
+      sC[0] = bottomCoord;
+      sC[1] = height;
+      sC[2] = 0;
+      sC[3] = leftCoord;
+    }
+    else if (top && right)
+    {
+      sC[0] = topCoord;
+      sC[1] = 0;
+      sC[2] = width;
+      sC[3] = rightCoord;
+    }
+    else if (top & left)
+    {
+      sC[0] = topCoord;
+      sC[1] = 0;
+      sC[2] = 0;
+      sC[3] = leftCoord;
+    }
+    else if (top && bottom)
+    {
+      sC[0] = topCoord;
+      sC[1] = 0;
+      sC[2] = bottomCoord;
+      sC[3] = height;
+    }
+    return sC;
   }
 
   public Point pole(Circle c)
   {
     return c.pole(this);
+  }
+
+  public int hashCode()
+  {
+    return toString().hashCode();
   }
 }

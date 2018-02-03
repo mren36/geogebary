@@ -167,7 +167,7 @@ public class Circle
     return inverse(Geometry.foot(center(), l));
   }
 
-  public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy)
+  public int[] screenCoords(int ax, int ay, int bx, int by, int cx, int cy)
   {
     HomogenousPolynomial[] rad = radSqu();
     int a = (int) Math.round(Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy)));
@@ -178,9 +178,15 @@ public class Circle
     centerV[0] = centerU[0].doubleValue();
     centerV[1] = centerU[1].doubleValue();
     centerV[2] = centerU[2].doubleValue();
-    int centerX = (int) Math.round(centerV[0] * ax + centerV[1] * bx + centerV[2] * cx);
-    int centerY = (int) Math.round(centerV[0] * ay + centerV[1] * by + centerV[2] * cy);
-    int r = (int) Math.round(Math.sqrt(rad[0].eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""))).divide(rad[1].eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""))), 10, BigDecimal.ROUND_HALF_UP).doubleValue())));
-    g.drawOval(centerX - r, centerY - r, 2 * r, 2 * r);
+    int[] sC = new int[3];
+    sC[0] = (int) Math.round(centerV[0] * ax + centerV[1] * bx + centerV[2] * cx);
+    sC[1] = (int) Math.round(centerV[0] * ay + centerV[1] * by + centerV[2] * cy);
+    sC[2] = (int) Math.round(Math.sqrt((rad[0].eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""))).divide(rad[1].eval(new BigInteger(a + ""), new BigInteger(b + ""), new BigInteger(c + ""))).doubleValue()));
+    return sC;
+  }
+
+  public int hashCode()
+  {
+    return toString().hashCode();
   }
 }

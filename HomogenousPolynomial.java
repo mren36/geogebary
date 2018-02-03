@@ -184,21 +184,27 @@ public class HomogenousPolynomial
     int index = polyString.indexOf("a^1");
     while (index >= 0)
     {
-      if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
+      if (index + 3 >= polyString.length())
+        polyString = polyString.substring(0, index + 1);
+      else if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
         polyString = polyString.substring(0, index + 1) + polyString.substring(index + 3);
       index = polyString.indexOf("a^1", index + 1);
     }
     index = polyString.indexOf("b^1");
     while (index >= 0)
     {
-      if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
+      if (index + 3 >= polyString.length())
+        polyString = polyString.substring(0, index + 1);
+      else if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
         polyString = polyString.substring(0, index + 1) + polyString.substring(index + 3);
       index = polyString.indexOf("b^1", index + 1);
     }
     index = polyString.indexOf("c^1");
     while (index >= 0)
     {
-      if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
+      if (index + 3 >= polyString.length())
+        polyString = polyString.substring(0, index + 1);
+      else if ("1234567890".indexOf(polyString.charAt(index + 3)) == -1)
         polyString = polyString.substring(0, index + 1) + polyString.substring(index + 3);
       index = polyString.indexOf("c^1", index + 1);
     }

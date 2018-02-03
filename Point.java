@@ -114,7 +114,7 @@ public class Point
     return pow.equals(rad);
   }
 
-  public void draw(Graphics g, int ax, int ay, int bx, int by, int cx, int cy) // draws the point in g given coordinates of triangle
+  public int[] screenCoords(int ax, int ay, int bx, int by, int cx, int cy) // draws the point in g given coordinates of triangle
   {
     int a = (int) Math.round(Math.sqrt((bx - cx) * (bx - cx) + (by - cy) * (by - cy)));
     int b = (int) Math.round(Math.sqrt((cx - ax) * (cx - ax) + (cy - ay) * (cy - ay)));
@@ -126,7 +126,10 @@ public class Point
     v[2] = u[2].doubleValue();
     int x = (int) Math.round(v[0] * ax + v[1] * bx + v[2] * cx);
     int y = (int) Math.round(v[0] * ay + v[1] * by + v[2] * cy);
-    g.fillOval(x - 3, y - 3, 6, 6);
+    int[] sC = new int[2];
+    sC[0] = x;
+    sC[1] = y;
+    return sC;
   }
 
   public Line polar(Circle c)
@@ -170,5 +173,10 @@ public class Point
   public Point circumcenter(Point P1, Point P2, Point P3)
   {
     return Geometry.circumcenter(this, P2, P3);
+  }
+
+  public int hashCode()
+  {
+    return toString().hashCode();
   }
 }

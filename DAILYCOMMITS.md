@@ -33,3 +33,7 @@ A log of all daily commits for the _CSC630 The Open Source Movement_ class.
 
 #### January 31, 2018
 * changed `int`s to `long`s
+
+#### February 6, 2018
+* changed `long`s into `BigInteger`s
+* created rudimentary interactive graphics

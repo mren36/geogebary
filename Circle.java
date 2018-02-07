@@ -187,6 +187,6 @@ public class Circle
 
   public int hashCode()
   {
-    return toString().hashCode();
+    return coeff.hashCode();
   }
 }

@@ -173,4 +173,21 @@ public class HomogenousVector
     v[2] = v[2].divide(weight, 10, BigDecimal.ROUND_HALF_UP);
     return v;
   }
+
+  public int hashCode()
+  {
+    BigInteger x1 = x.eval(BigInteger.ONE, BigInteger.ONE, BigInteger.ONE);
+    BigInteger y1 = y.eval(BigInteger.ONE, BigInteger.ONE, BigInteger.ONE);
+    BigInteger z1 = z.eval(BigInteger.ONE, BigInteger.ONE, BigInteger.ONE);
+    if (x1.equals(BigInteger.ZERO) && y1.equals(BigInteger.ZERO) && z1.equals(BigInteger.ZERO))
+      return 0;
+    BigInteger gcd = x1.gcd(y1.gcd(z1));
+    x1 = x1.divide(gcd);
+    y1 = y1.divide(gcd);
+    z1 = z1.divide(gcd);
+    int intX = x1.intValue();
+    int intY = y1.intValue();
+    int intZ = z1.intValue();
+    return intX + intY + intZ;
+  }
 }

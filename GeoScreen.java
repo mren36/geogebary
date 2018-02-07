@@ -278,9 +278,22 @@ public class GeoScreen extends JPanel implements MouseListener
       return P.equals(other.P);
     }
 
+    public boolean equals(Object o)
+    {
+      if (o instanceof screenPoint)
+        return equals((screenPoint) o);
+      else
+        return false;
+    }
+
     public int hashCode()
     {
       return P.hashCode();
+    }
+
+    public String toString()
+    {
+      return P.toString();
     }
   }
 
@@ -308,9 +321,22 @@ public class GeoScreen extends JPanel implements MouseListener
       return l.equals(other.l);
     }
 
+    public boolean equals(Object o)
+    {
+      if (o instanceof screenLine)
+        return equals((screenLine) o);
+      else
+        return false;
+    }
+
     public int hashCode()
     {
       return l.hashCode();
+    }
+
+    public String toString()
+    {
+      return l.toString();
     }
   }
 
@@ -336,9 +362,22 @@ public class GeoScreen extends JPanel implements MouseListener
       return c.equals(other.c);
     }
 
+    public boolean equals(Object o)
+    {
+      if (o instanceof screenCircle)
+        return equals((screenCircle) o);
+      else
+        return false;
+    }
+
     public int hashCode()
     {
       return c.hashCode();
+    }
+
+    public String toString()
+    {
+      return c.toString();
     }
   }
 

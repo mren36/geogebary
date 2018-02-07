@@ -177,6 +177,6 @@ public class Point
 
   public int hashCode()
   {
-    return toString().hashCode();
+    return coords.hashCode();
   }
 }

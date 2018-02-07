@@ -224,6 +224,6 @@ public class Line
 
   public int hashCode()
   {
-    return toString().hashCode();
+    return coeffs.hashCode();
   }
 }

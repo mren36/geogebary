@@ -190,6 +190,12 @@ public class GeoScreen extends JPanel implements MouseListener
             add(Geometry.secondInt(selectedCircles.get(0), selectedCircles.get(1), selectedPoints.get(0)));
           if (toolState == 11)
             add(Geometry.tangentLine(selectedPoints.get(0), selectedCircles.get(0)));
+          if (toolState == 12)
+            System.out.println(selectedPoints.get(0).on(selectedLines.get(0)));
+          if (toolState == 13)
+            System.out.println(selectedPoints.get(0).on(selectedCircles.get(0)));
+          if (toolState == 14)
+            System.out.println(selectedLines.get(0).isTangent(selectedCircles.get(0)));
           if (toolState == 15)
             remove(selectedPoints.get(0));
           if (toolState == 16)

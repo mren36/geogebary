@@ -305,7 +305,7 @@ public class Line
   /**
    * Returns the pole of this line given a circle.
    * @param c
-   * @return Pole point. 
+   * @return Pole point.
    */
   public Point pole(Circle c)
   {

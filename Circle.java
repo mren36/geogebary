@@ -5,18 +5,29 @@ import java.awt.*;
 import javax.swing.*;
 import java.math.*;
 
+/**
+ *
+ */
 public class Circle
 {
   private HomogenousPolynomial coeff; // represents the k coefficient in front of the left hand side in the equation above
   private HomogenousVector radCoeffs; // represents the coefficients u,v,w of the radical axis of the circle with the circumcircle
                                       // of the reference triangle in the right hand side of the equation above
 
+  /**
+   *
+   */
   public Circle() // returns the circumcircle of the reference triangle
   {
     coeff = new HomogenousPolynomial("1");
     radCoeffs = new HomogenousVector(2);
   }
 
+  /**
+   *
+   * @param coeff
+   * @param radCoeffs
+   */
   public Circle(HomogenousPolynomial coeff, HomogenousVector radCoeffs) // sets coeff and radCoeff
   {
     if (coeff.equalsZero())
@@ -27,6 +38,13 @@ public class Circle
     this.radCoeffs = radCoeffs;
   }
 
+  /**
+   *
+   * @param coeff
+   * @param radX
+   * @param radY
+   * @param radZ
+   */
   public Circle(HomogenousPolynomial coeff, HomogenousPolynomial radX, HomogenousPolynomial radY, HomogenousPolynomial radZ) // sets k, u, v, w
   {
     radCoeffs = new HomogenousVector(radX, radY, radZ);
@@ -38,6 +56,13 @@ public class Circle
     this.radCoeffs = radCoeffs;
   }
 
+  /**
+   *
+   * @param coeffString
+   * @param radXString
+   * @param radYString
+   * @param radZString
+   */
   public Circle(String coeffString, String radXString, String radYString, String radZString) // sets k, u, v, w by String
   {
     HomogenousPolynomial coeff = new HomogenousPolynomial(coeffString);
@@ -50,12 +75,22 @@ public class Circle
     this.radCoeffs = radCoeffs;
   }
 
+  /**
+   *
+   * @param other
+   */
   public Circle(Circle other) // copy constructor
   {
     coeff = other.coeff;
     radCoeffs = other.radCoeffs;
   }
 
+  /**
+   *
+   * @param P1
+   * @param P2
+   * @param P3
+   */
   public Circle(Point P1, Point P2, Point P3) // returns the circle through P1, P2, and P3
   {
     Circle circle = Geometry.circumcircle(P1, P2, P3);
@@ -63,6 +98,11 @@ public class Circle
     radCoeffs = circle.radCoeffs;
   }
 
+  /**
+   *
+   * @param P1
+   * @param P2
+   */
   public Circle(Point P1, Point P2) // returns the circle with diamter P1P2
   {
     Circle circle = Geometry.diameter(P1, P2);
@@ -70,11 +110,20 @@ public class Circle
     radCoeffs = circle.radCoeffs;
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public boolean equals(Circle other) // returns whether this and other have the same equation up to scaling
   {
     return radCoeffs.times(other.coeff).equals(other.radCoeffs.times(coeff));
   }
 
+  /**
+   *
+   * @return
+   */
   public Point center() // returns the cetner of the circle, given by a formula
   {
     HomogenousPolynomial xCoord = new HomogenousPolynomial("a^2").times(radCoeffs.dot(new HomogenousVector("-2", "1", "1"))).plus(new HomogenousPolynomial("b^2-c^2").times(radCoeffs.dot(new HomogenousVector("0", "1", "-1"))).plus(coeff.times(new HomogenousPolynomial("-a^4+a^2b^2+a^2c^2"))));
@@ -83,41 +132,77 @@ public class Circle
     return new Point(xCoord, yCoord, zCoord);
   }
 
+  /**
+   *
+   * @return
+   */
   public String toString() // returns a String for the equation of the circle
   {
     return "( " + coeff + " ) * ( a^2yz+b^2zx+c^2xy ) = ( x+y+z ) * ( ( " + radCoeffs.getX() + " )x+( " + radCoeffs.getY() + " )y+( " + radCoeffs.getZ() + " )z )";
   }
 
+  /**
+   *
+   * @return
+   */
   public HomogenousPolynomial getCoeff() // getter for coeff
   {
     return coeff;
   }
 
+  /**
+   *
+   * @return
+   */
   public HomogenousVector getRadCoeffs() // getter for radCoeff
   {
     return radCoeffs;
   }
 
+  /**
+   *
+   * @param P
+   * @return
+   */
   public boolean contains(Point P) // return whether P is on the circle
   {
     return P.on(this);
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public Line radAxis(Circle other) // returns the radical axis of this and other
   {
     return Geometry.radAxis(this, other);
   }
 
+  /**
+   *
+   * @param l
+   * @return
+   */
   public boolean isTangent(Line l) // returns whether l is tangent to the circle
   {
     return Geometry.isTangent(l, this);
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public boolean isTangent(Circle other) // returns whether this and other are tangent
   {
     return Geometry.isTangent(this, other);
   }
 
+  /**
+   *
+   * @return
+   */
   public HomogenousPolynomial[] radSqu()
   {
     HomogenousPolynomial[] frac = new HomogenousPolynomial[2];
@@ -144,6 +229,11 @@ public class Circle
     return frac;
   }
 
+  /**
+   *
+   * @param P
+   * @return
+   */
   public Line polar(Point P)
   {
     Point O = center();
@@ -152,6 +242,11 @@ public class Circle
     return Geometry.radAxis(this, new Circle(O, P));
   }
 
+  /**
+   *
+   * @param P
+   * @return
+   */
   public Point inverse(Point P)
   {
     Point O = center();
@@ -162,11 +257,26 @@ public class Circle
     return Geometry.foot(O, Geometry.radAxis(this, new Circle(O, P)));
   }
 
+  /**
+   *
+   * @param l
+   * @return
+   */
   public Point pole(Line l)
   {
     return inverse(Geometry.foot(center(), l));
   }
 
+  /**
+   *
+   * @param ax
+   * @param ay
+   * @param bx
+   * @param by
+   * @param cx
+   * @param cy
+   * @return
+   */
   public int[] screenCoords(int ax, int ay, int bx, int by, int cx, int cy)
   {
     HomogenousPolynomial[] rad = radSqu();
@@ -185,6 +295,10 @@ public class Circle
     return sC;
   }
 
+  /**
+   *
+   * @return
+   */
   public int hashCode()
   {
     return coeff.hashCode();

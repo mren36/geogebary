@@ -2,17 +2,28 @@
 
 import java.math.*;
 
+/**
+ *
+ */
 public class HomogenousPolynomial
 {
   private BigInteger[][] poly; // an array that stores the coefficients of the polynomial
                         // poly[i][j] denotes the coefficient of a^ib^jc^(d-i-j)
                         // where d is the degree of the polynomial
 
+  /**
+   *
+   * @param d
+   */
   public HomogenousPolynomial(int d) // returns a polynomial of degree d with coefficients all 0
   {
     poly = new BigInteger[d + 1][d + 1];
   }
 
+  /**
+   *
+   * @param poly
+   */
   public HomogenousPolynomial(BigInteger[][] poly) // returns a polynomial with coefficients specified by the array
   {
     if (poly.length != poly[0].length)
@@ -21,11 +32,19 @@ public class HomogenousPolynomial
       this.poly = poly;
   }
 
+  /**
+   *
+   * @param other
+   */
   public HomogenousPolynomial(HomogenousPolynomial other) // copy constructor
   {
     this.poly = other.poly;
   }
 
+  /**
+   *
+   * @param polyString
+   */
   public HomogenousPolynomial(String polyString) // returns a polynomial given its String form
                                                  // no spaces between coefficients and terms ordered a,b,c
                                                  // example: a^3-ab^2+3ab^2+7c^3
@@ -53,11 +72,20 @@ public class HomogenousPolynomial
     this.poly = poly;
   }
 
+  /**
+   *
+   * @return
+   */
   public int degree() // returns the degree of the polynomial
   {
     return poly.length - 1;
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public HomogenousPolynomial plus(HomogenousPolynomial other) // returns the polynomial sum of this and other
   {
     if (this.degree() != other.degree())
@@ -69,6 +97,11 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
+  /**
+   *
+   * @param c
+   * @return
+   */
   public HomogenousPolynomial times(BigInteger c) // returns the product of the polynomial and an integer c
   {
     BigInteger[][] newPoly = new BigInteger[degree() + 1][degree() + 1];
@@ -78,6 +111,11 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
+  /**
+   *
+   * @param c
+   * @return
+   */
   public HomogenousPolynomial div(BigInteger c) // returns the quotient of the polynomial and an integer c
   {
     BigInteger[][] newPoly = new BigInteger[degree() + 1][degree() + 1];
@@ -87,6 +125,10 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
+  /**
+   *
+   * @return
+   */
   public BigInteger gcd() // returns the gcd of the coefficients of the polynomial, defined to be 0 if all coefficients are 0
   {
     BigInteger gcd = BigInteger.ZERO;
@@ -96,11 +138,21 @@ public class HomogenousPolynomial
     return gcd;
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public HomogenousPolynomial minus(HomogenousPolynomial other) // returns the polynomial difference between this and other
   {
     return plus(other.times(new BigInteger("-1")));
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public HomogenousPolynomial times(HomogenousPolynomial other) // returns the polynomial product of this and other
   {
     BigInteger[][] newPoly = new BigInteger[degree() + other.degree() + 1][degree() + other.degree() + 1];
@@ -115,6 +167,11 @@ public class HomogenousPolynomial
     return new HomogenousPolynomial(newPoly);
   }
 
+  /**
+   *
+   * @param p
+   * @return
+   */
   public HomogenousPolynomial pow(int p) // returns the polynomial raised to the pth power
   {
     if (p < 1)
@@ -124,11 +181,20 @@ public class HomogenousPolynomial
     return times(pow(p - 1));
   }
 
+  /**
+   *
+   * @param v
+   * @return
+   */
   public HomogenousVector times(HomogenousVector v) // returns the product of the polynomial by a HomogenousVector
   {
     return v.times(this);
   }
 
+  /**
+   *
+   * @return
+   */
   public boolean equalsZero() // returns wehther the polynomial is the zero polynomial, i.e. has all coefficients 0
   {
     for (int i = 0; i <= degree(); i++)
@@ -138,11 +204,23 @@ public class HomogenousPolynomial
     return true;
   }
 
+  /**
+   *
+   * @param other
+   * @return
+   */
   public boolean equals(HomogenousPolynomial other) // returns whether the polynomial has the same coefficients as other
   {
     return minus(other).equalsZero();
   }
 
+  /**
+   *
+   * @param a
+   * @param b
+   * @param c
+   * @return
+   */
   public BigInteger eval(BigInteger a, BigInteger b, BigInteger c)
   {
     BigInteger p = BigInteger.ZERO;
@@ -152,6 +230,13 @@ public class HomogenousPolynomial
     return p;
   }
 
+  /**
+   *
+   * @param a
+   * @param b
+   * @param c
+   * @return
+   */
   public BigDecimal eval(BigDecimal a, BigDecimal b, BigDecimal c)
   {
     BigDecimal p = BigDecimal.ZERO;
@@ -161,6 +246,10 @@ public class HomogenousPolynomial
     return p;
   }
 
+  /**
+   *
+   * @return
+   */
   public String toString() // returns the String form of the polynomial, ordered lexicographically as a>b>c
   {
     String polyString = "";
@@ -213,6 +302,11 @@ public class HomogenousPolynomial
     return polyString;
   }
 
+  /**
+   *
+   * @param polyString
+   * @return
+   */
   private static String addPlus(String polyString) // private helper method for toString(), adds + between each term
   {
     String s = polyString;
@@ -227,6 +321,11 @@ public class HomogenousPolynomial
     return s;
   }
 
+  /**
+   *
+   * @param polyString
+   * @return
+   */
   private static String addPlusOne(String polyString) // private helper method for toString(), adds coefficients of 1 and -1
   {
     if (polyString.length() == 0)
@@ -293,6 +392,11 @@ public class HomogenousPolynomial
     return s;
   }
 
+  /**
+   *
+   * @param monomial
+   * @return
+   */
   private static BigInteger[] coeffPow(String monomial) // private helper method for toString(), returns coefficient and powers of a monomial
   {
     int aIndex = monomial.indexOf("a");

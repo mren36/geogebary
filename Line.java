@@ -1,9 +1,10 @@
-// a class that represents a line with barycentric equation ux+vy+wz=0 for some HomogenousVector (u, v, w)
-
 import java.awt.*;
 import javax.swing.*;
 import java.math.*;
 
+/**
+ * A class that represents a line with barycentric equation ux+vy+wz=0 for some HomogenousVector (u, v, w)
+ */
 public class Line
 {
   private HomogenousVector coeffs; // stores the coefficients of the line equation
@@ -17,8 +18,14 @@ public class Line
     this.coeffs = v;
   }
 
-  public Line(HomogenousPolynomial x, HomogenousPolynomial y, HomogenousPolynomial z) // sets the coefficients of the line equation
-                                                                                      // by their homogenous polynomials
+  /**
+   * Initializes a line with the coefficients of the line equation given by their homogeneous polynomials.
+   * @param x first polynomial
+   * @param y second polynomial
+   * @param z third polynomial
+   */
+  public Line(HomogenousPolynomial x, HomogenousPolynomial y, HomogenousPolynomial z)
+
   {
     coeffs = new HomogenousVector(x, y, z);
     if (coeffs.equalsZero())
@@ -28,7 +35,13 @@ public class Line
     this.coeffs = v;
   }
 
-  public Line(String xString, String yString, String zString) // sets the coefficients of the line equation by polynomial Strings
+  /**
+   * Initializes a line with the coefficients of the line equation given by polynomial strings.
+   * @param xString first polynomial
+   * @param yString second polynomial
+   * @param zString third polynomial
+   */
+  public Line(String xString, String yString, String zString) //
   {
     coeffs = new HomogenousVector(xString, yString, zString);
     if (coeffs.equalsZero())
@@ -38,7 +51,13 @@ public class Line
     this.coeffs = v;
   }
 
-  public Line(Point P1, Point P2) // returns the line through two points, computes via the cross product of their coordinates
+  /**
+   * Initializes a line with the coefficients of the line equation given by the cross product of the coordinates of the
+   * two points.
+   * @param P1 first point
+   * @param P2 second point
+   */
+  public Line(Point P1, Point P2)
   {
     if (P1.equals(P2))
       throw new IllegalArgumentException("points cannot be the same");
@@ -47,67 +66,133 @@ public class Line
     this.coeffs = v;
   }
 
-  public Line(Line other) // copy constructor
+  /**
+   * Initializes a line with the coefficients of the line equation given by another line.
+   * @param other line
+   */
+  public Line(Line other)
   {
     coeffs = other.coeffs;
   }
 
-  public boolean equals(Line other) // returns whether the line equations are the same
+  /**
+   * Returns whether the line equations are the same.
+   * @param other line
+   * @return True if coefficients are equal. False otherwise.
+   */
+  public boolean equals(Line other)
   {
     return coeffs.equals(other.coeffs);
   }
 
-  public HomogenousVector getCoeffs() // gets coefficients of the line equation
+  /**
+   * Returns a homogeneous vector containing the coefficients of the line equation.
+   * @return coefficients
+   */
+  public HomogenousVector getCoeffs()
   {
     return coeffs;
   }
 
-  public String toString() // returns line equation in String form
+  /**
+   * Returns a String of the line equation.
+   * @return line equation
+   */
+  public String toString()
   {
     return "( " + coeffs.getX() + " ) x + ( " + coeffs.getY() + " ) y + ( " + coeffs.getZ() + " ) z = 0";
   }
 
-  public Point intersect(Line other) // returhs the intersection of this and other
+  /**
+   * Returns the intersection of this line with the given live.
+   * @param other line
+   * @return point of intersection
+   */
+  public Point intersect(Line other)
   {
     return new Point(this, other);
   }
 
-  public boolean contains(Point P) // returns whether the line passes through a point P
+  /**
+   * Returns whether the line passes through a given point P.
+   * @param P point
+   * @return True if intersects. False otherwise.
+   */
+  public boolean contains(Point P)
   {
     return coeffs.perp(P.getCoords());
   }
 
-  public boolean parallel(Line other) // returns whether the line is parallel to other
+  /**
+   * Returns whether this line is parallel to the given line.
+   * @param other
+   * @return True if parallel. False otherwise.
+   */
+  public boolean parallel(Line other)
   {
     return Geometry.parallel(this, other);
   }
 
-  public boolean perp(Line other) // returns whether the line is perpendicular to other
+  /**
+   * Returns whether this line is perpendicular to the given line.
+   * @param other
+   * @return True if parallel. False otherwise.
+   */
+  public boolean perp(Line other)
   {
     return Geometry.perp(this, other);
   }
 
-  public HomogenousPolynomial getX() // getter for x coefficent
+  /**
+   * Returns the x coefficient.
+   * @return x coefficient
+   */
+  public HomogenousPolynomial getX()
   {
     return coeffs.getX();
   }
 
-  public HomogenousPolynomial getY() // getter for y coefficient
+  /**
+   * Returns y coefficient.
+   * @return y coefficient
+   */
+  public HomogenousPolynomial getY()
   {
     return coeffs.getY();
   }
 
-  public HomogenousPolynomial getZ() // getter for z coefficient
+  /**
+   * Returns z coefficient.
+   * @return z coefficient
+   */
+  public HomogenousPolynomial getZ()
   {
     return coeffs.getZ();
   }
 
-  public boolean isTangent(Circle c) // returns whether the line is tangent to c
+  /**
+   * Returns whether this line is tangent to the given circle.
+   * @param circle
+   * @return True if tangent. False otherwise.
+   */
+  public boolean isTangent(Circle c)
   {
     return Geometry.isTangent(this, c);
   }
 
-  public int[] screenCoords(int ax, int ay, int bx, int by, int cx, int cy, int width, int height) // draws the line in g given coefficients
+  /**
+   * Draws a line given coefficients.
+   * @param ax
+   * @param ay
+   * @param bx
+   * @param by
+   * @param cx
+   * @param cy
+   * @param width
+   * @param height
+   * @return
+   */
+  public int[] screenCoords(int ax, int ay, int bx, int by, int cx, int cy, int width, int height)
   {
     Point P1, P2;
     if (equals(new Line("0", "0", "1")))
@@ -217,11 +302,20 @@ public class Line
     return sC;
   }
 
+  /**
+   * Returns the pole of this line given a circle.
+   * @param c
+   * @return Pole point. 
+   */
   public Point pole(Circle c)
   {
     return c.pole(this);
   }
 
+  /**
+   * Returns the hash code.
+   * @return hash
+   */
   public int hashCode()
   {
     return coeffs.hashCode();

@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class GeoScreen extends JPanel implements MouseListener
+public class GeoScreen extends JPanel implements MouseListener, KeyListener
 {
   static final long serialVersionUID = 42L;
   private int ax = 400, ay = 100, bx = 275, by = 400, cx = 625, cy = 400; // stores coordinates of the triangles
@@ -28,6 +28,10 @@ public class GeoScreen extends JPanel implements MouseListener
   private ArrayList<Line> selectedLines = new ArrayList<Line>();
   private ArrayList<Circle> selectedCircles = new ArrayList<Circle>();
   private ArrayList<tool> tools = new ArrayList<tool>();
+  private String keyString = "nothing";
+  private String modString = "nothing";
+  private String actionString = "nothing";
+  private String locationString = "nothing";
 
   public GeoScreen(int width, int height)
   {
@@ -40,6 +44,8 @@ public class GeoScreen extends JPanel implements MouseListener
     lines.add(new screenLine(c));
     circles.add(new screenCircle(new Circle(A, B, C)));
     addMouseListener(this);
+    addKeyListener(this);
+    setFocusable(true);
     for (int i = 0; i < 19; i++)
       tools.add(new tool(i));
   }
@@ -93,6 +99,12 @@ public class GeoScreen extends JPanel implements MouseListener
       g.drawRect(0, tools.get(i).boxTop, 90, tools.get(i).boxBottom - tools.get(i).boxTop);
       g.drawString(i + "", 40, (tools.get(i).boxBottom + tools.get(i).boxTop) / 2 + 5);
     }
+
+    // draw text
+    g.drawString(keyString, 100, 200);
+    g.drawString(modString, 100, 300);
+    g.drawString(locationString, 100, 400);
+    g.drawString(actionString, 100, 500);
   }
 
   public void reset()
@@ -130,6 +142,74 @@ public class GeoScreen extends JPanel implements MouseListener
   public void remove(Circle c)
   {
     circles.remove(new screenCircle(c));
+  }
+
+  /** Handle the key typed event from the text field. */
+  public void keyTyped(KeyEvent e) {
+    displayInfo(e, "KEY TYPED: ");
+  }
+
+  /** Handle the key-pressed event from the text field. */
+  public void keyPressed(KeyEvent e) {
+    displayInfo(e, "KEY PRESSED: ");
+  }
+
+  /** Handle the key-released event from the text field. */
+  public void keyReleased(KeyEvent e) {
+    displayInfo(e, "KEY RELEASED: ");
+  }
+
+  private void displayInfo(KeyEvent e, String keyStatus){
+
+    //You should only rely on the key char if the event
+    //is a key typed event.
+    int id = e.getID();
+    // set keystring
+    if (id == KeyEvent.KEY_TYPED) {
+      char c = e.getKeyChar();
+      keyString = "key character = '" + c + "'";
+    } else {
+      int keyCode = e.getKeyCode();
+      keyString = "key code = " + keyCode
+              + " ("
+              + KeyEvent.getKeyText(keyCode)
+              + ")";
+    }
+
+    int modifiersEx = e.getModifiersEx();
+    // set mod string
+    modString = "extended modifiers = " + modifiersEx;
+    String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+    if (tmpString.length() > 0) {
+      modString += " (" + tmpString + ")";
+    } else {
+      modString += " (no extended modifiers)";
+    }
+
+
+    actionString = "action key? ";
+    if (e.isActionKey()) {
+      actionString += "YES";
+    } else {
+      actionString += "NO";
+    }
+
+    System.out.println(actionString);
+
+    locationString = "key location: ";
+    int location = e.getKeyLocation();
+    if (location == KeyEvent.KEY_LOCATION_STANDARD) {
+      locationString += "standard";
+    } else if (location == KeyEvent.KEY_LOCATION_LEFT) {
+      locationString += "left";
+    } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
+      locationString += "right";
+    } else if (location == KeyEvent.KEY_LOCATION_NUMPAD) {
+      locationString += "numpad";
+    } else { // (location == KeyEvent.KEY_LOCATION_UNKNOWN)
+      locationString += "unknown";
+    }
+    repaint();
   }
 
   public void mouseExited(MouseEvent e)

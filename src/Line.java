@@ -172,7 +172,7 @@ public class Line
 
   /**
    * Returns whether this line is tangent to the given circle.
-   * @param circle
+   * @param c circle
    * @return True if tangent. False otherwise.
    */
   public boolean isTangent(Circle c)

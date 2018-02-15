@@ -1,8 +1,14 @@
 // displays the geometry diagram in a JPanel
 
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GeoScreen extends JPanel implements MouseListener, KeyListener
@@ -18,23 +24,30 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
   private static Line a = new Line("1", "0", "0");
   private static Line b = new Line("0", "1", "0");
   private static Line c = new Line("0", "0", "1");
-  private static int width = 1500;
-  private static int height = 1500;
+  private static int leftMargin = 400;
+  private int width;
+  private int height;
   private int toolState = -1;
   private int pointState = 0;
   private int lineState = 0;
   private int circleState = 0;
-  private ArrayList<Point> selectedPoints = new ArrayList<Point>();
-  private ArrayList<Line> selectedLines = new ArrayList<Line>();
-  private ArrayList<Circle> selectedCircles = new ArrayList<Circle>();
-  private ArrayList<tool> tools = new ArrayList<tool>();
+  private List<Point> selectedPoints = new ArrayList<Point>();
+  private List<Line> selectedLines = new ArrayList<Line>();
+  private List<Circle> selectedCircles = new ArrayList<Circle>();
+  private List<tool> tools = new ArrayList<tool>();
   private String keyString = "nothing";
   private String modString = "nothing";
   private String actionString = "nothing";
   private String locationString = "nothing";
 
+  // images
+  private static final File dir = new File("D:\\Libraries\\Desktop\\SchoolWork\\CS_630\\Open_Source\\geogebary\\src\\imgs");
+  private List<Image> icons;
+
   public GeoScreen(int width, int height)
   {
+    this.width = width;
+    this.height = height;
     points.add(new screenPoint(A));
     points.add(new screenPoint(B));
     points.add(new screenPoint(C));
@@ -46,8 +59,29 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     addMouseListener(this);
     addKeyListener(this);
     setFocusable(true);
-    for (int i = 0; i < 19; i++)
+    // initialize tools
+    for (int i = 0; i < 19; i++) {
       tools.add(new tool(i));
+    }
+    // initialize images for tools
+    icons = new ArrayList<Image>();
+    if(dir.isDirectory()){
+      for(File curFile : dir.listFiles()){
+        BufferedImage img = null;
+        try {
+          img = ImageIO.read(curFile);
+          System.out.println("image: " + curFile.getName());
+          System.out.println(" width : " + img.getWidth());
+          System.out.println(" height: " + img.getHeight());
+          System.out.println(" size  : " + curFile.length());
+          icons.add(img);
+        } catch(IOException e){
+
+        }
+      }
+    }
+
+
   }
 
   public void paintComponent(Graphics g)
@@ -97,6 +131,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
         g.setColor(Color.RED);
 
       g.drawRect(0, tools.get(i).boxTop, 90, tools.get(i).boxBottom - tools.get(i).boxTop);
+      g.drawImage(icons.get(i), width - 128, i*64, 64, 64, this);
       g.drawString(i + "", 40, (tools.get(i).boxBottom + tools.get(i).boxTop) / 2 + 5);
     }
 
@@ -156,6 +191,26 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
 
   /** Handle the key-released event from the text field. */
   public void keyReleased(KeyEvent e) {
+    System.out.println("Key Released!");
+    // call function when ENTER key is pressed:
+    int id = e.getID();
+    int keyCode = e.getKeyCode();
+    System.out.println(keyCode);
+    char keyChar = e.getKeyChar();
+
+    // if the key is ENTER, then press ENTER
+    if(keyCode == 10){
+      clickEnter(0, 0);
+    }
+    // if the key is one of the tools 0 - 9
+    else if (keyCode >= 48 && keyCode <= 57){
+      String toolStateString = "0123456789";
+      // set the tool state to the current typed key, i.e. '1'
+      toolState = toolStateString.indexOf(keyChar);
+      System.out.println(toolState);
+      drawTools(45, tools.get(toolState).boxTop + 15);
+    }
+
     displayInfo(e, "KEY RELEASED: ");
   }
 
@@ -194,7 +249,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
       actionString += "NO";
     }
 
-    System.out.println(actionString);
+    // System.out.println(actionString);
 
     locationString = "key location: ";
     int location = e.getKeyLocation();
@@ -237,65 +292,94 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     int x = e.getX();
     int y = e.getY();
 
+    // checks whether the mouse has clicked inside the button
     if (x <= 90)
     {
       if (y <= 30)
       {
-        if (toolState < 0)
-          return;
-
-        if (tools.get(toolState).numPoint == selectedPoints.size() && tools.get(toolState).numLine == selectedLines.size() && tools.get(toolState).numCircle == selectedCircles.size())
-        {
-          if (toolState == 0)
-            add(new Line(selectedPoints.get(0), selectedPoints.get(1)));
-          if (toolState == 1)
-            add(new Point(selectedLines.get(0), selectedLines.get(1)));
-          if (toolState == 2)
-            add(new Circle(selectedPoints.get(0), selectedPoints.get(1), selectedPoints.get(2)));
-          if (toolState == 3)
-            add(Geometry.midpoint(selectedPoints.get(0), selectedPoints.get(1)));
-          if (toolState == 4)
-            add(Geometry.reflect(selectedPoints.get(0), selectedPoints.get(1)));
-          if (toolState == 5)
-            add(Geometry.perp(selectedPoints.get(0), selectedLines.get(0)));
-          if (toolState == 6)
-            add(Geometry.parallel(selectedPoints.get(0), selectedLines.get(0)));
-          if (toolState == 7)
-            add(Geometry.radAxis(selectedCircles.get(0), selectedCircles.get(1)));
-          if (toolState == 8)
-            add(selectedCircles.get(0).center());
-          if (toolState == 9)
-            add(Geometry.secondInt(selectedLines.get(0), selectedCircles.get(0), selectedPoints.get(0)));
-          if (toolState == 10)
-            add(Geometry.secondInt(selectedCircles.get(0), selectedCircles.get(1), selectedPoints.get(0)));
-          if (toolState == 11)
-            add(Geometry.tangentLine(selectedPoints.get(0), selectedCircles.get(0)));
-          if (toolState == 15)
-            remove(selectedPoints.get(0));
-          if (toolState == 16)
-            remove(selectedLines.get(0));
-          if (toolState == 17)
-            remove(selectedCircles.get(0));
-          if (toolState == 18)
-            add(new Circle(selectedPoints.get(0), selectedPoints.get(1)));
-          reset();
-          repaint();
-        }
-        return;
+        clickEnter(x, y);
       }
       else
       {
-        for (int i = 0; i < tools.size(); i++)
-          if (tools.get(i).boxTop <= y && y <= tools.get(i).boxBottom)
-          {
-            toolState = i;
-            reset();
-            repaint();
-          }
-        return;
+        drawTools(x, y);
       }
     }
 
+    checkMouseClicked(x, y);
+    repaint();
+  }
+
+  /**
+   * Processes the use of the tool.
+   * @param x
+   * @param y
+   */
+  private void clickEnter(int x, int y){
+    if (toolState < 0)
+      return;
+
+    if (tools.get(toolState).numPoint == selectedPoints.size() && tools.get(toolState).numLine == selectedLines.size() && tools.get(toolState).numCircle == selectedCircles.size())
+    {
+      if (toolState == 0)
+        add(new Line(selectedPoints.get(0), selectedPoints.get(1)));
+      if (toolState == 1)
+        add(new Point(selectedLines.get(0), selectedLines.get(1)));
+      if (toolState == 2)
+        add(new Circle(selectedPoints.get(0), selectedPoints.get(1), selectedPoints.get(2)));
+      if (toolState == 3)
+        add(Geometry.midpoint(selectedPoints.get(0), selectedPoints.get(1)));
+      if (toolState == 4)
+        add(Geometry.reflect(selectedPoints.get(0), selectedPoints.get(1)));
+      if (toolState == 5)
+        add(Geometry.perp(selectedPoints.get(0), selectedLines.get(0)));
+      if (toolState == 6)
+        add(Geometry.parallel(selectedPoints.get(0), selectedLines.get(0)));
+      if (toolState == 7)
+        add(Geometry.radAxis(selectedCircles.get(0), selectedCircles.get(1)));
+      if (toolState == 8)
+        add(selectedCircles.get(0).center());
+      if (toolState == 9)
+        add(Geometry.secondInt(selectedLines.get(0), selectedCircles.get(0), selectedPoints.get(0)));
+      if (toolState == 10)
+        add(Geometry.secondInt(selectedCircles.get(0), selectedCircles.get(1), selectedPoints.get(0)));
+      if (toolState == 11)
+        add(Geometry.tangentLine(selectedPoints.get(0), selectedCircles.get(0)));
+      if (toolState == 15)
+        remove(selectedPoints.get(0));
+      if (toolState == 16)
+        remove(selectedLines.get(0));
+      if (toolState == 17)
+        remove(selectedCircles.get(0));
+      if (toolState == 18)
+        add(new Circle(selectedPoints.get(0), selectedPoints.get(1)));
+      reset();
+      repaint();
+    }
+    return;
+  }
+
+  /**
+   * Display all the tools.
+   * @param x
+   * @param y
+   */
+  private void drawTools(int x, int y){
+    for (int i = 0; i < tools.size(); i++)
+      if (tools.get(i).boxTop <= y && y <= tools.get(i).boxBottom)
+      {
+        toolState = i;
+        reset();
+        repaint();
+      }
+    return;
+  }
+
+  /**
+   * Checks whether the mouse has clicked on a point, line, or circle.
+   * @param x
+   * @param y
+   */
+  private void checkMouseClicked(int x, int y){
     if (toolState < 0)
       return;
 
@@ -309,8 +393,6 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
       tools.get(toolState).click(l);
     else if (c != null)
       tools.get(toolState).click(c);
-
-    repaint();
   }
 
   public Point clickPoint(int x, int y)
@@ -385,7 +467,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     public screenLine(Line l)
     {
       this.l = l;
-      coords = l.screenCoords(ax, ay, bx, by, cx, cy, width, height);
+      coords = l.screenCoords(ax, ay, bx, by, cx, cy, width+leftMargin, height);
     }
 
     public boolean click(int x, int y)
@@ -637,13 +719,17 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
 
   public static void main(String[] args)
   {
+    int width = 800;
+    int height = 800;
     JFrame window = new JFrame("Geogebary");
-    window.setBounds(0, 0, 800, 800);
-    GeoScreen panel = new GeoScreen(800, 800);
+    window.setBounds(0, 0, width + leftMargin, height);
+    GeoScreen panel = new GeoScreen(width + leftMargin, height);
+    panel.setLayout(null);
     panel.setBackground(Color.WHITE);
 
     Container c = window.getContentPane();
     c.add(panel);
+    c.setSize(width + leftMargin, height);
 
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     window.setVisible(true);

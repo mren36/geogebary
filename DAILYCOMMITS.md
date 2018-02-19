@@ -43,3 +43,6 @@ A log of all daily commits for the _CSC630 The Open Source Movement_ class.
 
 #### February 9, 2018
 * added `boolean` methods to interactive screen
+
+#### February 19, 2018
+* added `gcd` method for `int`s in `Grobner` class

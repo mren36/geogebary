@@ -11,8 +11,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class GeoScreen extends JPanel implements MouseListener, KeyListener
-{
+public class GeoScreen extends JPanel implements MouseListener, KeyListener {
   static final long serialVersionUID = 42L;
   private int ax = 400, ay = 100, bx = 275, by = 400, cx = 625, cy = 400; // stores coordinates of the triangles
   private Set<screenPoint> points = new HashSet<screenPoint>(); // stores points in the diagram
@@ -34,7 +33,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
   private List<Point> selectedPoints = new ArrayList<Point>();
   private List<Line> selectedLines = new ArrayList<Line>();
   private List<Circle> selectedCircles = new ArrayList<Circle>();
-  private List<tool> tools = new ArrayList<tool>();
+  private List<Tool> tools = new ArrayList<Tool>();
   private String keyString = "nothing";
   private String modString = "nothing";
   private String actionString = "nothing";
@@ -44,8 +43,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
   private static final File dir = new File("D:\\Libraries\\Desktop\\SchoolWork\\CS_630\\Open_Source\\geogebary\\src\\imgs");
   private List<Image> icons;
 
-  public GeoScreen(int width, int height)
-  {
+  public GeoScreen(int width, int height) {
     this.width = width;
     this.height = height;
     points.add(new screenPoint(A));
@@ -59,14 +57,14 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     addMouseListener(this);
     addKeyListener(this);
     setFocusable(true);
-    // initialize tools
-    for (int i = 0; i < 19; i++) {
-      tools.add(new tool(i));
-    }
+
     // initialize images for tools
     icons = new ArrayList<Image>();
-    if(dir.isDirectory()){
-      for(File curFile : dir.listFiles()){
+    if (dir.isDirectory()) {
+      File[] sortedFiles = dir.listFiles();
+      Arrays.sort(sortedFiles, new FileSorter());
+
+      for (File curFile : sortedFiles) {
         BufferedImage img = null;
         try {
           img = ImageIO.read(curFile);
@@ -75,13 +73,32 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
           System.out.println(" height: " + img.getHeight());
           System.out.println(" size  : " + curFile.length());
           icons.add(img);
-        } catch(IOException e){
+        } catch (IOException e) {
 
         }
       }
     }
+    // initialize a row of tools
+    for(int i = 0; i < 3; i++){
+      // initialize a column of tools
+      for(int j = 0; j < 7 && i*7 + j < 19; j++){
+        int boxTop =  30 + 94*j;
+        int boxBottom = 59 + 94*j;
+        int curToolState = i*7 + j;
+        tools.add(new Tool(curToolState, boxTop, boxBottom, icons.get(curToolState)));
+      }
+    }
+  }
 
-
+  /**
+   * Custom comparator to sort files by usage number.
+   */
+  public static class FileSorter implements Comparator<File>{
+    public int compare(File a, File b){
+      int numA = Integer.parseInt(a.getName().split("_")[0]);
+      int numB = Integer.parseInt(b.getName().split("_")[0]);
+      return numA - numB;
+    }
   }
 
   public void paintComponent(Graphics g)
@@ -101,7 +118,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
       if (!selectedPoints.contains(sc.c))
         g.drawOval(sc.coords[0] - sc.coords[2], sc.coords[1] - sc.coords[2], 2 * sc.coords[2], 2 * sc.coords[2]);
 
-    g.setColor(Color.RED);
+    g.setColor(Color.BLUE);
 
     for (screenPoint sP : points)
       if (selectedPoints.contains(sP.P))
@@ -121,25 +138,29 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     g.setFont(new Font("TimesRoman", Font.BOLD, 20));
     g.drawString("ENTER", 10, 20);
 
-    for (int i = 0; i < tools.size(); i++)
+    // draw two columns of tools
+    for (int i = 0; i < 3; i++)
     {
-      g.setColor(Color.WHITE);
-      g.fillRect(0, tools.get(i).boxTop, 90, tools.get(i).boxTop + 30);
+      for(int j = 0; j < 7 && (i*7 + j) < tools.size() ; j++){
+        int curToolState = i*7 + j;
 
-      g.setColor(Color.BLACK);
-      if (toolState == i)
-        g.setColor(Color.RED);
+        g.setColor(Color.WHITE);
+        g.fillRect(i*64, tools.get(curToolState).boxTop, 64, 93);
 
-      g.drawRect(0, tools.get(i).boxTop, 90, tools.get(i).boxBottom - tools.get(i).boxTop);
-      g.drawImage(icons.get(i), width - 128, i*64, 64, 64, this);
-      g.drawString(i + "", 40, (tools.get(i).boxBottom + tools.get(i).boxTop) / 2 + 5);
+        g.setColor(Color.BLACK);
+        if (toolState == curToolState) {
+          System.out.println("selected tool state: " + toolState);
+          g.setColor(Color.BLUE);
+          System.out.println("BLUE!");
+          System.out.println("state: " + curToolState);
+        }
+
+        g.drawRect(i*64, tools.get(curToolState).boxTop, 64, tools.get(curToolState).boxBottom - tools.get(curToolState).boxTop + 64);
+        g.drawImage(icons.get(curToolState), i*64, tools.get(curToolState).boxTop + 30, 64, 64, this);
+        g.drawString("abcdefghijklmnopqrst".charAt(curToolState) + "", i*64 + 32, (tools.get(curToolState).boxBottom + tools.get(curToolState).boxTop) / 2 + 5);
+      }
+
     }
-
-    // draw text
-    g.drawString(keyString, 100, 200);
-    g.drawString(modString, 100, 300);
-    g.drawString(locationString, 100, 400);
-    g.drawString(actionString, 100, 500);
   }
 
   public void reset()
@@ -203,11 +224,11 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
       clickEnter(0, 0);
     }
     // if the key is one of the tools 0 - 9
-    else if (keyCode >= 48 && keyCode <= 57){
-      String toolStateString = "0123456789";
+    else if (keyCode >= 65 && keyCode <= 83){
+      String toolStateString = "abcdefghijklmnopqrstuvwxyz";
       // set the tool state to the current typed key, i.e. '1'
       toolState = toolStateString.indexOf(keyChar);
-      System.out.println(toolState);
+      System.out.println("set tool state: " + toolState);
       drawTools(45, tools.get(toolState).boxTop + 15);
     }
 
@@ -364,13 +385,18 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
    * @param y
    */
   private void drawTools(int x, int y){
-    for (int i = 0; i < tools.size(); i++)
-      if (tools.get(i).boxTop <= y && y <= tools.get(i).boxBottom)
-      {
-        toolState = i;
-        reset();
-        repaint();
+    for (int i = 0; i < 3; i++){
+      for (int j = 0; j < 7 && i*7 + j < tools.size(); j++){
+        int curToolState = i*7 + j;
+        if (tools.get(curToolState).boxTop <= y && y <= tools.get(i).boxBottom
+                && i*64 <= x && x <= (i+1)*64){
+          toolState = i;
+          reset();
+          repaint();
+        }
       }
+    }
+
     return;
   }
 
@@ -543,7 +569,7 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     }
   }
 
-  protected class tool
+  protected class Tool
   {
     private int id;
     private int numPoint;
@@ -551,12 +577,14 @@ public class GeoScreen extends JPanel implements MouseListener, KeyListener
     private int numCircle;
     private int boxTop;
     private int boxBottom;
+    private Image icon;
 
-    public tool(int i)
+    public Tool(int i, int boxTop, int boxBottom, Image icon)
     {
       id = i;
-      boxTop = 30 + 30 * i;
-      boxBottom = 59 + 30 * i;
+      this.boxTop = boxTop;
+      this.boxBottom = boxBottom;
+      this.icon = icon;
 
       if (i == 0) // add the line through two points
       {

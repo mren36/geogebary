@@ -1,12 +1,8 @@
-// represents a circle with barycentric equation k(a^2yz+b^2zx+c^2xy)=(x+y+z)(ux+vy+wz)
-// k, u, v, w are integer coefficient homogenous polynomials with deg(k)+2=deg(u)=deg(v)=deg(w)
-
-import java.awt.*;
-import javax.swing.*;
 import java.math.*;
 
 /**
- *
+ * Circle: Class that represents a circle with barycentric equation k(a^2yz+b^2zx+c^2xy)=(x+y+z)(ux+vy+wz)
+ * where k, u, v, w are integer coefficient homogenous polynomials with deg(k)+2=deg(u)=deg(v)=deg(w)
  */
 public class Circle
 {
@@ -15,20 +11,20 @@ public class Circle
                                       // of the reference triangle in the right hand side of the equation above
 
   /**
-   *
+   * Initializes a circle as the circumcircle of the reference triangle.
    */
-  public Circle() // returns the circumcircle of the reference triangle
+  public Circle()
   {
     coeff = new HomogenousPolynomial("1");
     radCoeffs = new HomogenousVector(2);
   }
 
   /**
-   *
+   * Initializes a circle with the given coefficients and radical coefficients.
    * @param coeff
    * @param radCoeffs
    */
-  public Circle(HomogenousPolynomial coeff, HomogenousVector radCoeffs) // sets coeff and radCoeff
+  public Circle(HomogenousPolynomial coeff, HomogenousVector radCoeffs)
   {
     if (coeff.equalsZero())
       throw new IllegalArgumentException("coefficient must be nonzero");
@@ -39,13 +35,13 @@ public class Circle
   }
 
   /**
-   *
+   * Initializes a circle with k, u, v, and w values given the coefficients and radical coefficients as X, Y, Z, polynomials.
    * @param coeff
    * @param radX
    * @param radY
    * @param radZ
    */
-  public Circle(HomogenousPolynomial coeff, HomogenousPolynomial radX, HomogenousPolynomial radY, HomogenousPolynomial radZ) // sets k, u, v, w
+  public Circle(HomogenousPolynomial coeff, HomogenousPolynomial radX, HomogenousPolynomial radY, HomogenousPolynomial radZ)
   {
     radCoeffs = new HomogenousVector(radX, radY, radZ);
     if (coeff.equalsZero())
@@ -57,7 +53,7 @@ public class Circle
   }
 
   /**
-   *
+   * Initializes a circle with k, u, v, and w values given the coefficients and radical coefficients as strings.
    * @param coeffString
    * @param radXString
    * @param radYString
@@ -76,22 +72,22 @@ public class Circle
   }
 
   /**
-   *
+   * Initializes this circle as a copy of the given circle.
    * @param other
    */
-  public Circle(Circle other) // copy constructor
+  public Circle(Circle other)
   {
     coeff = other.coeff;
     radCoeffs = other.radCoeffs;
   }
 
   /**
-   *
+   * Initializes a circle that passes through the three given points
    * @param P1
    * @param P2
    * @param P3
    */
-  public Circle(Point P1, Point P2, Point P3) // returns the circle through P1, P2, and P3
+  public Circle(Point P1, Point P2, Point P3)
   {
     Circle circle = Geometry.circumcircle(P1, P2, P3);
     coeff = circle.coeff;
@@ -99,11 +95,11 @@ public class Circle
   }
 
   /**
-   *
+   * Initializes a circle with the diameter connecting the two given points.
    * @param P1
    * @param P2
    */
-  public Circle(Point P1, Point P2) // returns the circle with diamter P1P2
+  public Circle(Point P1, Point P2)
   {
     Circle circle = Geometry.diameter(P1, P2);
     coeff = circle.coeff;
@@ -111,20 +107,20 @@ public class Circle
   }
 
   /**
-   *
+   * Returns whether this circle and the given circle have the same barycentric equation when scaled.
    * @param other
    * @return
    */
-  public boolean equals(Circle other) // returns whether this and other have the same equation up to scaling
+  public boolean equals(Circle other)
   {
     return radCoeffs.times(other.coeff).equals(other.radCoeffs.times(coeff));
   }
 
   /**
-   *
+   * Returns the center of this circle.
    * @return
    */
-  public Point center() // returns the cetner of the circle, given by a formula
+  public Point center()
   {
     HomogenousPolynomial xCoord = new HomogenousPolynomial("a^2").times(radCoeffs.dot(new HomogenousVector("-2", "1", "1"))).plus(new HomogenousPolynomial("b^2-c^2").times(radCoeffs.dot(new HomogenousVector("0", "1", "-1"))).plus(coeff.times(new HomogenousPolynomial("-a^4+a^2b^2+a^2c^2"))));
     HomogenousPolynomial yCoord = new HomogenousPolynomial("b^2").times(radCoeffs.dot(new HomogenousVector("1", "-2", "1"))).plus(new HomogenousPolynomial("c^2-a^2").times(radCoeffs.dot(new HomogenousVector("-1", "0", "1"))).plus(coeff.times(new HomogenousPolynomial("a^2b^2-b^4+b^2c^2"))));
@@ -133,25 +129,25 @@ public class Circle
   }
 
   /**
-   *
+   * Returns the barycentric equation of the circle as a String.
    * @return
    */
-  public String toString() // returns a String for the equation of the circle
+  public String toString()
   {
     return "( " + coeff + " ) * ( a^2yz+b^2zx+c^2xy ) = ( x+y+z ) * ( ( " + radCoeffs.getX() + " )x+( " + radCoeffs.getY() + " )y+( " + radCoeffs.getZ() + " )z )";
   }
 
   /**
-   *
+   * Returns the coefficients that describe this circle.
    * @return
    */
-  public HomogenousPolynomial getCoeff() // getter for coeff
+  public HomogenousPolynomial getCoeff()
   {
     return coeff;
   }
 
   /**
-   *
+   * Returns the radical coefficients taht describe this circle.
    * @return
    */
   public HomogenousVector getRadCoeffs() // getter for radCoeff
@@ -160,41 +156,41 @@ public class Circle
   }
 
   /**
-   *
+   * Returns whether the given point is on the circle.
    * @param P
    * @return
    */
-  public boolean contains(Point P) // return whether P is on the circle
+  public boolean contains(Point P)
   {
     return P.on(this);
   }
 
   /**
-   *
+   * Returns the radical axis of this circle and the given circle.
    * @param other
    * @return
    */
-  public Line radAxis(Circle other) // returns the radical axis of this and other
+  public Line radAxis(Circle other)
   {
     return Geometry.radAxis(this, other);
   }
 
   /**
-   *
+   * Returns whether this circle is tangent to the given line.
    * @param l
    * @return
    */
-  public boolean isTangent(Line l) // returns whether l is tangent to the circle
+  public boolean isTangent(Line l)
   {
     return Geometry.isTangent(l, this);
   }
 
   /**
-   *
+   * Returns whether this circle and the given circle are tangent.
    * @param other
    * @return
    */
-  public boolean isTangent(Circle other) // returns whether this and other are tangent
+  public boolean isTangent(Circle other)
   {
     return Geometry.isTangent(this, other);
   }
@@ -243,7 +239,7 @@ public class Circle
   }
 
   /**
-   *
+   * Returns the given point inverted about this circle's center.
    * @param P
    * @return
    */
@@ -296,7 +292,7 @@ public class Circle
   }
 
   /**
-   *
+   * Returns the hashcode of this circle, determined by its coefficients.
    * @return
    */
   public int hashCode()
